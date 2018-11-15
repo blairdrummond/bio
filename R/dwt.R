@@ -99,14 +99,14 @@ dwt.read <- function (filename, separating_factor=1000,from_qub=FALSE) {
 
         ### NOTE: Column 1 is empty, and thats how we get the spacing right.
 
-        dwells <- table[,3]
+        dwells <- table[,c1[[1]]]
 
         dwells <- dwells / 1000 # milliseconds to seconds
 
         ### Take the longest of all gaps, bound from below by seperating_factor itself
         max_dwell <- max(max(dwells)*separating_factor, max_dwell)
         
-        states <- table[,2]
+        states <- table[,c1[[2]]]
 
         bursts[[i]] <- segment.create(states, dwells, seg=i, start_time=0, name=util.basename(filename))
     }
