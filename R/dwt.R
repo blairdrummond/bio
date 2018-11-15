@@ -62,6 +62,7 @@ dwt.write <- function(segments, file="", seg=1, append=FALSE) {
 #'
 #' @param filename Filename to read from
 #' @param separating_factor In lieu of a known time between segments, seperate with a multple of the longest dwell.
+#' @param from_qub. Some .dwt files come from QUB. Set from_qub=TRUE if .dwt from QUB.
 #' @return A list of bursts (possibly a singleton)
 #' @examples
 #' 
@@ -77,7 +78,10 @@ dwt.write <- function(segments, file="", seg=1, append=FALSE) {
 #' 
 #' @export
 #' @importFrom utils read.csv
-dwt.read <- function (filename, separating_factor=1000) {
+dwt.read <- function (filename, separating_factor=1000,from_qub=FALSE) {
+
+    if (from_qub == TRUE)  {c1 <- c(2,1)}
+    if (from_qub == FALSE) {c1 <- c(3,2)}
 
     # load lines
     FileInput <- readLines(filename) 
