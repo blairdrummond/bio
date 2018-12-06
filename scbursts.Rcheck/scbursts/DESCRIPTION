@@ -8,6 +8,8 @@ Maintainer: Blair Drummond <bdrum047@uottawa.ca>
 License: MIT + file LICENSE
 LazyData: true
 RoxygenNote: 6.1.1
-Suggests: knitr,
-    rmarkdown
+Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2018-12-06 00:34:23 UTC; x
+Built: R 3.2.3; ; 2018-12-06 00:35:06 UTC; unix

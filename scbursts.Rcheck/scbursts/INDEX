@@ -1,0 +1,57 @@
+bursts.defined_by_tcrit
+                        Divide a recording into bursts defined by a
+                        critical time.
+bursts.get_gaps         Get the gaps between bursts.
+bursts.pcloseds         Return pcloseds of every burst.
+bursts.popens           Return popens of every burst.
+bursts.recombine        Combine bursts into one recording (with obvious
+                        spaces between them).
+bursts.remove_first_and_last
+                        Remove the first and last burst from the list.
+bursts.select           From a list of bursts, extract those that
+                        interest you by passing a selecting function.
+bursts.sort             Order a list of bursts by some function. For
+                        instance, popen.
+bursts.space_out        Artificially add amount of time between bursts
+                        (in absence of recording information).
+bursts.start_times_update
+                        (DON'T USE THIS) Fix meta-data of bursts.
+cplot.log_root_axes     Add log-root axes to histogram plot
+cplot.pclosed_ts        Plot Time Series (ts) of P(Closed).
+cplot.popen_ts          Plot Time Series (ts) of P(Open).
+dwt.read                Read a .dwt file.
+dwt.write               Write a dwt file to disk. Writes DOS line
+                        endings. Dwells are in milliseconds
+evt.extract_header      Extract header from evt file.
+evt.from_dwells         Converts dwell durations to absolute transition
+                        times.
+evt.read                Read a .evt file to a table. Times are in
+                        seconds
+evt.to_dwells           Calculate pulse lengths. Converts transition
+                        times to dwell durations.
+evt.write               Write bursts to a .evt file.
+hst.extract_header      Extract header from hst file.
+hst.read                Read a MIL ".hst" file to a table.
+hst.write               Write bursts to a log10(ms)-sqrt(Frequency)
+                        .hst file from open and closed tables.
+risetime.correct_gaussian
+                        Undo the effect of the gaussian filter.
+scan.read               Read a scan results text file. scan.read
+                        returns a 1 segment dataframe. Reads in scan
+                        results and puts them in the same format as the
+                        output of dwt.read. See 'dwt', and 'segment'
+                        for more information.
+segment.closed_dwells   Extract closed dwells.
+segment.count_closed    Extract number of closed dwells.
+segment.count_dwells    Extract number of dwells in segment.
+segment.count_open      Extract number of open dwells.
+segment.create          Create a "segment" object
+segment.duration        Get duration of a segment.
+segment.name            Extract name from segment.
+segment.open_dwells     Extract open dwells.
+segment.pclosed         Calculate empirical P(Closed) of a segment.
+segment.popen           Calculate empirical P(Open) of a segment.
+segment.seg             Extract segment number from segment.
+segment.start_time      Extract start_time from segment.
+segment.verify          Detect misrecorded data.
+util.basename           Remove suffix and path from filename.

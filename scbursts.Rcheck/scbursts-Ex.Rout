@@ -1,0 +1,1273 @@
+
+R version 3.2.3 (2015-12-10) -- "Wooden Christmas-Tree"
+Copyright (C) 2015 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "scbursts"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> base::assign(".ExTimings", "scbursts-Ex.timings", pos = 'CheckExEnv')
+> base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
+> base::assign(".format_ptime",
++ function(x) {
++   if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
++   if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
++   options(OutDec = '.')
++   format(x[1L:3L], digits = 7L)
++ },
++ pos = 'CheckExEnv')
+> 
+> ### * </HEADER>
+> library('scbursts')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("bursts.defined_by_tcrit")
+> ### * bursts.defined_by_tcrit
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.defined_by_tcrit
+> ### Title: Divide a recording into bursts defined by a critical time.
+> ### Aliases: bursts.defined_by_tcrit
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+> 
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> head(bursts[[1]])
+  states     dwells
+1      1 0.00068749
+2      0 0.00868591
+3      1 0.00017025
+4      0 0.02194467
+5      1 0.00257747
+6      0 0.01425703
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.defined_by_tcrit", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("bursts.get_gaps")
+> ### * bursts.get_gaps
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.get_gaps
+> ### Title: Get the gaps between bursts.
+> ### Aliases: bursts.get_gaps
+> 
+> ### ** Examples
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+> 
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> gaps <- bursts.get_gaps(bursts)
+> 
+> head(gaps)
+[1] 1.884120e-05 7.644000e-05 4.076900e-04 1.886101e-05 8.491200e-04
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.get_gaps", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("bursts.pcloseds")
+> ### * bursts.pcloseds
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.pcloseds
+> ### Title: Return pcloseds of every burst.
+> ### Aliases: bursts.pcloseds
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
+> dwells_c <- dwt.read(infile)
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> pcloseds <- bursts.popens(bursts)
+> hist(pcloseds)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.pcloseds", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("bursts.popens")
+> ### * bursts.popens
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.popens
+> ### Title: Return popens of every burst.
+> ### Aliases: bursts.popens
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
+> dwells_c <- dwt.read(infile)
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> popens <- bursts.popens(bursts)
+> hist(popens)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.popens", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("bursts.recombine")
+> ### * bursts.recombine
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.recombine
+> ### Title: Combine bursts into one recording (with obvious spaces between
+> ###   them).
+> ### Aliases: bursts.recombine
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
+> dwells_c <- dwt.read(infile)
+> 
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> # This is a single segment!
+> record <- bursts.recombine(bursts)
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> # Which means you can do stuff like this
+> open_dwells <- segment.open_dwells(bursts.recombine(bursts))
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.recombine", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("bursts.remove_first_and_last")
+> ### * bursts.remove_first_and_last
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.remove_first_and_last
+> ### Title: Remove the first and last burst from the list.
+> ### Aliases: bursts.remove_first_and_last
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+> 
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> # If there seem to be bad bursts at the ends
+> bursts <- bursts.remove_first_and_last(bursts)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.remove_first_and_last", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("bursts.select")
+> ### * bursts.select
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.select
+> ### Title: From a list of bursts, extract those that interest you by
+> ###   passing a selecting function.
+> ### Aliases: bursts.select
+> 
+> ### ** Examples
+> 
+> 
+> high_popen <- function (seg) {
++ 
++     segment.popen(seg) > 0.7
++ 
++ }
+> 
+> infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
+> dwells_c <- dwt.read(infile)
+> 
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> subset <- bursts.select(bursts, high_popen)
+> 
+> # To export to one .dwt file
+> subset_f <- bursts.select(bursts, high_popen, one_file=TRUE)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.select", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("bursts.sort")
+> ### * bursts.sort
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.sort
+> ### Title: Order a list of bursts by some function. For instance, popen.
+> ### Aliases: bursts.sort
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
+> dwells_c <- dwt.read(infile)
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> # A sorted list of bursts. 
+> sorted <- bursts.sort(bursts, segment.popen)
+> 
+> # You can also write your own functions. If you want P(Open) =~ P(Closed)
+> variance_fun <- function (seg) {
++     # Any function that maps a segment to a number works.
++     return(  segment.popen(seg) * segment.pclosed(seg)  )
++ }
+> 
+> weird_sort <- bursts.sort(bursts, variance_fun)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.sort", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("bursts.space_out")
+> ### * bursts.space_out
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: bursts.space_out
+> ### Title: Artificially add amount of time between bursts (in absence of
+> ###   recording information).
+> ### Aliases: bursts.space_out
+> 
+> ### ** Examples
+> 
+> infile <- system.file("extdata", "example.dwt", package = "scbursts")
+> dwells <- dwt.read(infile)
+> 
+> # Still a list, but the meta-data is fixed
+> spaced_records <- bursts.space_out(dwells, sep_factor=1000)
+> 
+> # Combine them, and they'll be nicely spaced out.
+> single_record <- bursts.recombine(spaced_records)
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> # You can now plot that single_record using one of the plot functions.
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("bursts.space_out", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("cplot.log_root_axes")
+> ### * cplot.log_root_axes
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: cplot.log_root_axes
+> ### Title: Add log-root axes to histogram plot
+> ### Aliases: cplot.log_root_axes
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
+> dwells_c <- dwt.read(infile)
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> open_dwells <- segment.open_dwells(bursts.recombine(bursts))
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> hist(log10(open_dwells), axes=FALSE, breaks=30)
+> cplot.log_root_axes(open_dwells)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("cplot.log_root_axes", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("cplot.pclosed_ts")
+> ### * cplot.pclosed_ts
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: cplot.pclosed_ts
+> ### Title: Plot Time Series (ts) of P(Closed).
+> ### Aliases: cplot.pclosed_ts
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
+> dwells_c <- dwt.read(infile)
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> cplot.pclosed_ts(bursts, "P(Closed) Time Series, 2018-09-20")
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("cplot.pclosed_ts", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("cplot.popen_ts")
+> ### * cplot.popen_ts
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: cplot.popen_ts
+> ### Title: Plot Time Series (ts) of P(Open).
+> ### Aliases: cplot.popen_ts
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
+> dwells_c <- dwt.read(infile)
+> bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+Warning in bursts.defined_by_tcrit(dwells_c, 1.511842, units = "s") :
+  Merging all recordings into one recording.
+Warning in segment.create(c(0), c(dwell)) :
+  Burst seems to have been misrecorded!
+> 
+> cplot.popen_ts(bursts, "P(Open) Time Series, 2018-09-20")
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("cplot.popen_ts", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("dwt.read")
+> ### * dwt.read
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: dwt.read
+> ### Title: Read a .dwt file.
+> ### Aliases: dwt.read
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> 
+> dwt.write(dwells, file="dwells.dwt")
+> 
+> # Quit R, come back the next day
+> 
+> dwells <- dwt.read("dwells.dwt")
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("dwt.read", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("dwt.write")
+> ### * dwt.write
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: dwt.write
+> ### Title: Write a dwt file to disk. Writes DOS line endings. Dwells are in
+> ###   milliseconds
+> ### Aliases: dwt.write
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> 
+> dwt.write(dwells, file="dwells.dwt")
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("dwt.write", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("evt.extract_header")
+> ### * evt.extract_header
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: evt.extract_header
+> ### Title: Extract header from evt file.
+> ### Aliases: evt.extract_header
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> 
+> # Get Dwells
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+> 
+> # Get Header
+> header <- evt.extract_header(infile)
+> 
+> evt.write(dwells_c, header=header, file="fixed_example.evt")
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("evt.extract_header", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("evt.from_dwells")
+> ### * evt.from_dwells
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: evt.from_dwells
+> ### Title: Converts dwell durations to absolute transition times.
+> ### Aliases: evt.from_dwells
+> 
+> ### ** Examples
+> 
+> 
+> dwells_file <- system.file("extdata", "example.dwt", package = "scbursts")
+> dwells <- dwt.read(dwells_file)
+> 
+> transitions <- evt.from_dwells(dwells)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("evt.from_dwells", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("evt.read")
+> ### * evt.read
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: evt.read
+> ### Title: Read a .evt file to a table. Times are in seconds
+> ### Aliases: evt.read
+> 
+> ### ** Examples
+> 
+> 
+> # import some of the data included with the package
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> transitions <- evt.read(infile)
+> 
+> head(transitions[[1]])
+  states      times
+1      1 0.04998190
+2      0 0.05066939
+3      1 0.05935530
+4      0 0.05952555
+5      1 0.08147022
+6      0 0.08404769
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("evt.read", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("evt.to_dwells")
+> ### * evt.to_dwells
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: evt.to_dwells
+> ### Title: Calculate pulse lengths. Converts transition times to dwell
+> ###   durations.
+> ### Aliases: evt.to_dwells
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> head(dwells[[1]])
+  states     dwells
+1      1 0.00068749
+2      0 0.00868591
+3      1 0.00017025
+4      0 0.02194467
+5      1 0.00257747
+6      0 0.01425703
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("evt.to_dwells", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("evt.write")
+> ### * evt.write
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: evt.write
+> ### Title: Write bursts to a .evt file.
+> ### Aliases: evt.write
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> 
+> # Get Dwells
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+> 
+> # Get Header
+> header <- evt.extract_header(infile)
+> 
+> evt.write(dwells_c, header=header, file="fixed_example.evt")
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("evt.write", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("hst.extract_header")
+> ### * hst.extract_header
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: hst.extract_header
+> ### Title: Extract header from hst file.
+> ### Aliases: hst.extract_header
+> 
+> ### ** Examples
+> 
+> 
+> # import some of the data included with the package
+> infile <- system.file("extdata", "example.hst", package = "scbursts")
+> 
+> open_table <- hst.read(infile, extract="open")
+/home/x/Documents/scbursts/scbursts/scbursts.Rcheck/scbursts/extdata/example.hst header:
+
+		histograms bin-sqrt(hst/sum(hst))-sqrt(pdf/sum(hst)):
+
+> closed_table <- hst.read(infile, extract="closed")
+/home/x/Documents/scbursts/scbursts/scbursts.Rcheck/scbursts/extdata/example.hst header:
+
+		histograms bin-sqrt(hst/sum(hst))-sqrt(pdf/sum(hst)):
+
+> header <- hst.extract_header(infile)
+> 
+> # Make adjustments to the histogram, if you wish
+> hst.write(open_table, closed_table, file="output_hist.hst", header=header)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("hst.extract_header", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("hst.read")
+> ### * hst.read
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: hst.read
+> ### Title: Read a MIL ".hst" file to a table.
+> ### Aliases: hst.read
+> 
+> ### ** Examples
+> 
+> 
+> # import some of the data included with the package
+> infile <- system.file("extdata", "example.hst", package = "scbursts")
+> open_hst   <- hst.read(infile, extract="open")
+/home/x/Documents/scbursts/scbursts/scbursts.Rcheck/scbursts/extdata/example.hst header:
+
+		histograms bin-sqrt(hst/sum(hst))-sqrt(pdf/sum(hst)):
+
+> closed_hst <- hst.read(infile, extract="closed")
+/home/x/Documents/scbursts/scbursts/scbursts.Rcheck/scbursts/extdata/example.hst header:
+
+		histograms bin-sqrt(hst/sum(hst))-sqrt(pdf/sum(hst)):
+
+> 
+> head(open_hst)
+          bin         freq          fit
+1 0.001044335 0.0001955802 0.0002754936
+2 0.001054644 0.1316252912 0.1393715556
+3 0.001067427 0.0856639239 0.1127495515
+4 0.001083313 0.0674752576 0.0848452035
+5 0.001103121 0.0414627334 0.0595975039
+6 0.001127909 0.0334439971 0.0399296310
+> head(closed_hst)
+          bin         freq          fit
+1 0.001044427 0.0001938221 5.096532e-05
+2 0.001053603 0.0093041458 4.288809e-03
+3 0.001064734 0.0093041458 5.115540e-03
+4 0.001078259 0.0129871095 6.093207e-03
+5 0.001094732 0.0157005912 7.245925e-03
+6 0.001114857 0.0162822704 8.600151e-03
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("hst.read", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("hst.write")
+> ### * hst.write
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: hst.write
+> ### Title: Write bursts to a log10(ms)-sqrt(Frequency) .hst file from open
+> ###   and closed tables.
+> ### Aliases: hst.write
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.hst", package = "scbursts")
+> 
+> open = hst.read(infile, extract="open")
+/home/x/Documents/scbursts/scbursts/scbursts.Rcheck/scbursts/extdata/example.hst header:
+
+		histograms bin-sqrt(hst/sum(hst))-sqrt(pdf/sum(hst)):
+
+> closed = hst.read(infile, extract="closed")
+/home/x/Documents/scbursts/scbursts/scbursts.Rcheck/scbursts/extdata/example.hst header:
+
+		histograms bin-sqrt(hst/sum(hst))-sqrt(pdf/sum(hst)):
+
+> header = hst.extract_header(infile)
+> 
+> ### Do stuff
+> 
+> hst.write(open, closed, file="new_histogram.hst", header=header)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("hst.write", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("risetime.correct_gaussian")
+> ### * risetime.correct_gaussian
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: risetime.correct_gaussian
+> ### Title: Undo the effect of the gaussian filter.
+> ### Aliases: risetime.correct_gaussian
+> 
+> ### ** Examples
+> 
+> 
+> infile <- system.file("extdata", "example.evt", package = "scbursts")
+> transitions <- evt.read(infile)
+> dwells <- evt.to_dwells(transitions)
+> 
+> dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("risetime.correct_gaussian", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("scan.read")
+> ### * scan.read
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: scan.read
+> ### Title: Read a scan results text file. scan.read returns a 1 segment
+> ###   dataframe. Reads in scan results and puts them in the same format as
+> ###   the output of dwt.read. See 'dwt', and 'segment' for more
+> ###   information.
+> ### Aliases: scan.read
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D seg <- scan.read('example_scan_output.scntxt')
+> ## End(Not run)
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("scan.read", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.closed_dwells")
+> ### * segment.closed_dwells
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.closed_dwells
+> ### Title: Extract closed dwells.
+> ### Aliases: segment.closed_dwells
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> closed_dwells <- segment.closed_dwells(my_burst)
+> head(closed_dwells)
+[1] 0.1 0.5 1.0 0.6 0.8
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.closed_dwells", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.count_closed")
+> ### * segment.count_closed
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.count_closed
+> ### Title: Extract number of closed dwells.
+> ### Aliases: segment.count_closed
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> segment.count_closed(my_burst)
+[1] 5
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.count_closed", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.count_dwells")
+> ### * segment.count_dwells
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.count_dwells
+> ### Title: Extract number of dwells in segment.
+> ### Aliases: segment.count_dwells
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> segment.count_dwells(my_burst)
+[1] 10
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.count_dwells", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.count_open")
+> ### * segment.count_open
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.count_open
+> ### Title: Extract number of open dwells.
+> ### Aliases: segment.count_open
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> segment.count_open(my_burst)
+[1] 5
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.count_open", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.create")
+> ### * segment.create
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.create
+> ### Title: Create a "segment" object
+> ### Aliases: segment.create
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=0, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 0, name = "example_segment") :
+  Burst seems to have been misrecorded!
+> 
+> segment.name(my_burst)
+[1] "example_segment"
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.create", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.duration")
+> ### * segment.duration
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.duration
+> ### Title: Get duration of a segment.
+> ### Aliases: segment.duration
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> segment.duration(my_burst)
+[1] 7.6
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.duration", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.name")
+> ### * segment.name
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.name
+> ### Title: Extract name from segment.
+> ### Aliases: segment.name
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> segment.name(my_burst)
+[1] "example_segment"
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.name", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.open_dwells")
+> ### * segment.open_dwells
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.open_dwells
+> ### Title: Extract open dwells.
+> ### Aliases: segment.open_dwells
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> open_dwells <- segment.open_dwells(my_burst)
+> head(open_dwells)
+[1] 1.1 0.2 1.1 1.1 1.1
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.open_dwells", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.pclosed")
+> ### * segment.pclosed
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.pclosed
+> ### Title: Calculate empirical P(Closed) of a segment.
+> ### Aliases: segment.pclosed
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> # P(Closed) of this burst
+> segment.pclosed(my_burst)
+[1] 0.3947368
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.pclosed", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.popen")
+> ### * segment.popen
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.popen
+> ### Title: Calculate empirical P(Open) of a segment.
+> ### Aliases: segment.popen
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> # P(Open) of this burst
+> segment.popen(my_burst)
+[1] 0.6052632
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.popen", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.seg")
+> ### * segment.seg
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.seg
+> ### Title: Extract segment number from segment.
+> ### Aliases: segment.seg
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=0, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 0, name = "example_segment") :
+  Burst seems to have been misrecorded!
+> 
+> segment.seg(my_burst)
+[1] 1
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.seg", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.start_time")
+> ### * segment.start_time
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.start_time
+> ### Title: Extract start_time from segment.
+> ### Aliases: segment.start_time
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> segment.start_time(my_burst)
+[1] 3.14159
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.start_time", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("segment.verify")
+> ### * segment.verify
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: segment.verify
+> ### Title: Detect misrecorded data.
+> ### Aliases: segment.verify
+> 
+> ### ** Examples
+> 
+> 
+> # It's more likely that you created states or dwells with some function
+> states  <-  c(0,      1,    0,    1,    0,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.0,  1.1,  0.6,  1.1,  0.8,  1.1)
+> my_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="example_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> segment.verify(my_burst)
+[1] FALSE
+> 
+> # Now, a bad burst with two adjacent open dwells
+> states  <-  c(0,      1,    0,    1,    1,    0,    1,    0,    1)
+> dwells  <-  c(0.1,  1.1,  0.5,  0.2,  1.1,  0.6,  1.1,  0.8,  1.1)
+> 
+> # This will issue a warning
+> faulty_burst <- segment.create(states, dwells, seg=1, start_time=3.14159, name="faulty_segment")
+Warning in segment.create(states, dwells, seg = 1, start_time = 3.14159,  :
+  Burst seems to have been misrecorded!
+> 
+> # This will differentiate good and faulty bursts
+> segment.verify(faulty_burst)
+[1] FALSE
+> 
+> # If you have a list of bursts, you can select the good ones with
+> # vbursts <- bursts.select(bursts, segment.verify)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("segment.verify", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("util.basename")
+> ### * util.basename
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: util.basename
+> ### Title: Remove suffix and path from filename.
+> ### Aliases: util.basename
+> 
+> ### ** Examples
+> 
+> util.basename("bursts/60uM-2017-08-18-16-32/60uM-712.dwt")
+[1] "60uM-712"
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("util.basename", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> ### * <FOOTER>
+> ###
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  0.608 0.016 0.624 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Single Channel Bursts Analysis</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+<h1> Single Channel Bursts Analysis
+<img class="toplogo" src="../../../doc/html/logo.jpg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;scbursts&rsquo; version 0.40</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="bursts.defined_by_tcrit.html">bursts.defined_by_tcrit</a></td>
+<td>Divide a recording into bursts defined by a critical time.</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.get_gaps.html">bursts.get_gaps</a></td>
+<td>Get the gaps between bursts.</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.pcloseds.html">bursts.pcloseds</a></td>
+<td>Return pcloseds of every burst.</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.popens.html">bursts.popens</a></td>
+<td>Return popens of every burst.</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.recombine.html">bursts.recombine</a></td>
+<td>Combine bursts into one recording (with obvious spaces between them).</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.remove_first_and_last.html">bursts.remove_first_and_last</a></td>
+<td>Remove the first and last burst from the list.</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.select.html">bursts.select</a></td>
+<td>From a list of bursts, extract those that interest you by passing a selecting function.</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.sort.html">bursts.sort</a></td>
+<td>Order a list of bursts by some function. For instance, popen.</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.space_out.html">bursts.space_out</a></td>
+<td>Artificially add amount of time between bursts (in absence of recording information).</td></tr>
+<tr><td style="width: 25%;"><a href="bursts.start_times_update.html">bursts.start_times_update</a></td>
+<td>(DON'T USE THIS) Fix meta-data of bursts.</td></tr>
+<tr><td style="width: 25%;"><a href="cplot.log_root_axes.html">cplot.log_root_axes</a></td>
+<td>Add log-root axes to histogram plot</td></tr>
+<tr><td style="width: 25%;"><a href="cplot.pclosed_ts.html">cplot.pclosed_ts</a></td>
+<td>Plot Time Series (ts) of P(Closed).</td></tr>
+<tr><td style="width: 25%;"><a href="cplot.popen_ts.html">cplot.popen_ts</a></td>
+<td>Plot Time Series (ts) of P(Open).</td></tr>
+<tr><td style="width: 25%;"><a href="dwt.read.html">dwt.read</a></td>
+<td>Read a .dwt file.</td></tr>
+<tr><td style="width: 25%;"><a href="dwt.write.html">dwt.write</a></td>
+<td>Write a dwt file to disk. Writes DOS line endings. Dwells are in milliseconds</td></tr>
+<tr><td style="width: 25%;"><a href="evt.extract_header.html">evt.extract_header</a></td>
+<td>Extract header from evt file.</td></tr>
+<tr><td style="width: 25%;"><a href="evt.from_dwells.html">evt.from_dwells</a></td>
+<td>Converts dwell durations to absolute transition times.</td></tr>
+<tr><td style="width: 25%;"><a href="evt.read.html">evt.read</a></td>
+<td>Read a .evt file to a table. Times are in seconds</td></tr>
+<tr><td style="width: 25%;"><a href="evt.to_dwells.html">evt.to_dwells</a></td>
+<td>Calculate pulse lengths. Converts transition times to dwell durations.</td></tr>
+<tr><td style="width: 25%;"><a href="evt.write.html">evt.write</a></td>
+<td>Write bursts to a .evt file.</td></tr>
+<tr><td style="width: 25%;"><a href="hst.extract_header.html">hst.extract_header</a></td>
+<td>Extract header from hst file.</td></tr>
+<tr><td style="width: 25%;"><a href="hst.read.html">hst.read</a></td>
+<td>Read a MIL ".hst" file to a table.</td></tr>
+<tr><td style="width: 25%;"><a href="hst.write.html">hst.write</a></td>
+<td>Write bursts to a log10(ms)-sqrt(Frequency) .hst file from open and closed tables.</td></tr>
+<tr><td style="width: 25%;"><a href="risetime.correct_gaussian.html">risetime.correct_gaussian</a></td>
+<td>Undo the effect of the gaussian filter.</td></tr>
+<tr><td style="width: 25%;"><a href="scan.read.html">scan.read</a></td>
+<td>Read a scan results text file. scan.read returns a 1 segment dataframe. Reads in scan results and puts them in the same format as the output of dwt.read. See 'dwt', and 'segment' for more information.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.closed_dwells.html">segment.closed_dwells</a></td>
+<td>Extract closed dwells.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.count_closed.html">segment.count_closed</a></td>
+<td>Extract number of closed dwells.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.count_dwells.html">segment.count_dwells</a></td>
+<td>Extract number of dwells in segment.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.count_open.html">segment.count_open</a></td>
+<td>Extract number of open dwells.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.create.html">segment.create</a></td>
+<td>Create a "segment" object</td></tr>
+<tr><td style="width: 25%;"><a href="segment.duration.html">segment.duration</a></td>
+<td>Get duration of a segment.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.name.html">segment.name</a></td>
+<td>Extract name from segment.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.open_dwells.html">segment.open_dwells</a></td>
+<td>Extract open dwells.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.pclosed.html">segment.pclosed</a></td>
+<td>Calculate empirical P(Closed) of a segment.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.popen.html">segment.popen</a></td>
+<td>Calculate empirical P(Open) of a segment.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.seg.html">segment.seg</a></td>
+<td>Extract segment number from segment.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.start_time.html">segment.start_time</a></td>
+<td>Extract start_time from segment.</td></tr>
+<tr><td style="width: 25%;"><a href="segment.verify.html">segment.verify</a></td>
+<td>Detect misrecorded data.</td></tr>
+<tr><td style="width: 25%;"><a href="util.basename.html">util.basename</a></td>
+<td>Remove suffix and path from filename.</td></tr>
+</table>
+</body></html>
