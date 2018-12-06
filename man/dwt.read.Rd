@@ -10,8 +10,6 @@ dwt.read(filename, separating_factor = 1000)
 \item{filename}{Filename to read from}
 
 \item{separating_factor}{In lieu of a known time between segments, seperate with a multple of the longest dwell.}
-
-\item{from_qub.}{Some .dwt files come from QUB. Set from_qub=TRUE if .dwt from QUB.}
 }
 \value{
 A list of bursts (possibly a singleton)

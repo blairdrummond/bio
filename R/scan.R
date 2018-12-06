@@ -54,7 +54,7 @@ consecutives_to_dwells <- function(states,dwells){
     sd             <- consecutives_to_dwells(states,dwells)
     brst           <- list()
     brst[[1]]      <- sc(sd[[1]],sd[[2]],seg=1,start_time=0,name=util.basename(filename))
-    brst           <- bursts.start_times_update(brst,gaps=rep(max_dwell,0))
+    brst           <- bursts.start_times_update(brst,gaps=rep(max_dwells,0))
     return(brst)
 }
 
