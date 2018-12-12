@@ -8,13 +8,14 @@ update-deps:
 	Rscript -e 'install.packages("roxygen2",  repos="http://cran.rstudio.com")'
 	Rscript -e 'install.packages("rmarkdown", repos="http://cran.rstudio.com")'
 	Rscript -e 'install.packages("knitr",     repos="http://cran.rstudio.com")'
-
+	Rscript -e 'install.packages("gdata",     repos="http://cran.rstudio.com")'
 
 deps:
 	Rscript -e 'if (!require("devtools"))  install.packages("devtools",  repos="http://cran.rstudio.com")'
 	Rscript -e 'if (!require("roxygen2"))  install.packages("roxygen2",  repos="http://cran.rstudio.com")'
 	Rscript -e 'if (!require("rmarkdown")) install.packages("rmarkdown", repos="http://cran.rstudio.com")'
-	Rscript -e 'if (!require("knitr"))     install.packages("knitr",     repos="http://cran.rstudio.com")'
+	Rscript -e 'if (!require("knitr"))     install.packages("knitr",     repos="http://cran.rstudio.com")'	
+	Rscript -e 'if (!require("gdata"))     install.packages("gdata",     repos="http://cran.rstudio.com")'
 
 docs:
 	R -e 'devtools::document()'
@@ -51,3 +52,6 @@ export: $(PACKAGE)_$(VERSION).tar.gz $(PACKAGE).Rcheck
 	@cp scbursts.Rcheck/scbursts/doc/scbursts.pdf ../build/
 	@cp $(PACKAGE)_$(VERSION).tar.gz ../build
 	$(MAKE) clean
+
+
+

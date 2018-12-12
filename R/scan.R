@@ -43,6 +43,17 @@ consecutives_to_dwells <- function(states,dwells){
 }
 
 
+is.binary <- function(fn,max=1000){
+
+    f = file(fn,'rb',raw=TRUE)
+    b = readBin(f,'int',max,size=1,signed=FALSE)
+    return(max(b)>128)
+}
+
+    ### Warning Message: If file is not in text format:
+
+    if (is.binary(filename)){
+        stop('Input file must be a text file.')}
 
     sc             <- segment.create
     init_read      <- read.csv(filename,sep='\t',header=FALSE)

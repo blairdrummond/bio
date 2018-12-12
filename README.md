@@ -110,6 +110,7 @@ install.packages("devtools")
 install.packages("knitr")
 install.packages("rmarkdown")
 install.packages("roxygen2")
+install.packages("gdata")
 ```
 
 5. Now, back in the shell, you can run `make` and `make install`.
