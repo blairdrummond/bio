@@ -15,45 +15,43 @@
 #' @importFrom utils read.csv
 scan.read <- function(filename,separating_factor=1000){
 
+    consecutives_to_dwells <- function(states,dwells){
 
-consecutives_to_dwells <- function(states,dwells){
-
-    d  = dwells
-    s  = states
-    sd = list(vector(),vector())
-    l  = length
-    c  = 1
-    i  = 1
-    while(i < l(s)){
-        if(s[i] == s[i+1]){
-            d[i+1] = d[i+1]+d[i]
-            if((i+1) == l(s)){
-                sd[[1]] = append(sd[[1]],s[i+1])
-                sd[[2]] = append(sd[[2]],d[i+1])}
-            i = i+1}
-        else if(s[i]!= s[i+1]){
-            sd[[1]] = append(sd[[1]],s[i])
-            sd[[2]] = append(sd[[2]],d[i])
-            if((i+1) == l(s)){
-                sd[[1]] = append(sd[[1]],s[i+1])
-                sd[[2]] = append(sd[[2]],d[i+1])}
-            i = i+1}
-}
-    return(sd)
-}
-
-
-is.binary <- function(fn,max=1000){
-
-    f = file(fn,'rb',raw=TRUE)
-    b = readBin(f,'int',max,size=1,signed=FALSE)
-    return(max(b)>128)
-}
+        d  = dwells
+        s  = states
+        sd = list(vector(),vector())
+        l  = length
+        c  = 1
+        i  = 1
+        while(i < l(s)){
+            if(s[i] == s[i+1]){
+                d[i+1] = d[i+1]+d[i]
+                if((i+1) == l(s)){
+                    sd[[1]] = append(sd[[1]],s[i+1])
+                    sd[[2]] = append(sd[[2]],d[i+1])}
+                i = i+1}
+            else if(s[i]!= s[i+1]){
+                    sd[[1]] = append(sd[[1]],s[i])
+                    sd[[2]] = append(sd[[2]],d[i])
+                    if((i+1) == l(s)){
+                        sd[[1]] = append(sd[[1]],s[i+1])
+                        sd[[2]] = append(sd[[2]],d[i+1])}
+                    i = i+1}
+        }
+        return(sd)
+    }
+    
+    is.binary <- function(fn,max=1000){
+        
+        f = file(fn,'rb',raw=TRUE)
+        b = readBin(f,'int',max,size=1,signed=FALSE)
+        return(max(b)>128)
+    }
 
     ### Warning Message: If file is not in text format:
-
     if (is.binary(filename)){
-        stop('Input file must be a text file.')}
+        stop('Input file must be a text file.')
+    }
 
     sc             <- segment.create
     init_read      <- read.csv(filename,sep='\t',header=FALSE)
