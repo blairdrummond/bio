@@ -24,7 +24,7 @@ This is a package designed to extract information on the stochastic properties o
 
 \tableofcontents
 
-# `.evt`s and `.dwt`s
+# `.evt`s, `.dwt`s, and `.scntxt`s
 
 EVTs (Event files) and DWTs (Dwell times) are formats produced and required by several pieces of software that are used by the lab. In particular, TAC produces and uses `.evt` files and Mill uses `.dwt`s. So we need to read and write these files often, but they aren't ideal ways to represent our data, and so the only manipulations we want to do on `evt`s and `dwt`s is read and write them to data-types which are more natural in R. Those data-types which we prefer are **segments**, and **bursts**, which are detailed in the next sections. Segments are essentially tables of dwell times, and bursts are essentially lists of segments, but with meta-data attached to them. In any case **the first thing you want to do is convert your file into a list of segments**.
 
@@ -78,6 +78,10 @@ dwells <- dwt.read("60uM.dwt")
 
 dwt.write(corrected_dwells, file="60uMc.dwt")
 ```
+
+
+
+
 
 # Segments
 
@@ -414,4 +418,102 @@ cplot.popen_ts(bursts)
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 # Or, so look at a subregion 
 cplot.popen_ts(bursts, xlim=c(0,0.1))
+```
+
+# Example Workflows
+
+
+
+## DWT
+
+
+```{r, fig.show='hold', eval=TRUE, include = TRUE}
+library(scbursts)
+
+infile <- system.file("extdata", "example.dwt", package = "scbursts")
+dwells <- dwt.read(infile)
+# dwells <- dwt.read('example1.dwt')
+
+bursts <- bursts.defined_by_tcrit(dwells,100,units='ms')
+twoplus <- function(seg){
+		return(segment.count_open(seg)>=2)
+}
+bursts_twoplus <- bursts.select(bursts,twoplus)
+head(dwells)
+```
+
+
+
+## EVT
+
+```{r, fig.show='hold', eval=TRUE, include = TRUE}
+infile <- system.file("extdata", "example.evt", package = "scbursts")
+transitions <- evt.read(infile)
+
+# transitions <- evt.read("July28-6.evt")
+
+dwells <- evt.to_dwells(transitions)
+dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+
+# Get Header
+header <- evt.extract_header(infile)
+
+head(dwells_c)
+```
+
+
+
+## SCAN
+
+```{r, fig.show='hold', eval=TRUE, include = TRUE}
+library(scbursts)
+
+infile <- system.file("extdata", "example.scntxt", package = "scbursts")
+dwells <- scan.read(infile)
+# dwells <- scan.read('example1_scan.txt')
+
+bursts <- bursts.defined_by_tcrit(dwells,100,units='ms')
+twoplus <- function(seg){
+		return(segment.count_open(seg)>=2)
+}
+bursts_twoplus <- bursts.select(bursts,twoplus)
+head(dwells)
+```
+
+
+
+## QUB
+
+```{r, fig.show='hold', eval=TRUE, include = TRUE}
+library(scbursts)
+
+infile <- system.file("extdata", "example_qub.dwt", package = "scbursts")
+dwells <- dwt.read(infile)
+# dwells <- dwt.read('example1_qub.dwt')
+
+bursts <- bursts.defined_by_tcrit(dwells,100,units='ms')
+twoplus <- function(seg){
+		return(segment.count_open(seg)>=2)
+}
+bursts_twoplus <- bursts.select(bursts,twoplus)
+head(dwells)
+```
+
+
+
+## Clampfit
+
+```{r, fig.show='hold', eval=TRUE, include = TRUE}
+library(scbursts)
+
+infile <- system.file("extdata", "example.xlsx", package = "scbursts")
+dwells <- clampfit.read(infile)
+# dwells <- clampfit.read('Figure1.xlsx')
+
+bursts <- bursts.defined_by_tcrit(dwells,100,units='ms')
+twoplus <- function(seg) {
+    return(segment.count_open(seg)>=2)
+}
+bursts_twoplus <- bursts.select(bursts,twoplus)
+head(dwells)
 ```

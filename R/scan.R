@@ -8,9 +8,11 @@
 #'        seperate with a multple of the longest dwell.
 #' @return A list of bursts.
 #' @examples
-#' \dontrun{
-#' seg <- scan.read('example_scan_output.scntxt')
-#'}
+#' 
+#' infile <- system.file("extdata", "example.scntxt", package = "scbursts")
+#' seg <- scan.read(infile)
+#' head(seg)
+#'
 #' @export
 #' @importFrom utils read.csv
 scan.read <- function(filename,separating_factor=1000){

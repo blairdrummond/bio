@@ -24,12 +24,16 @@ bursts.defined_by_tcrit <- function(segments, t_crit, units="s") {
  
     if (units == "s") {         
         t_crit = t_crit
+        warning(sprintf("UNITS: Using t_crit = %d SECONDS", t_crit))
     } else if (units == "ms") {
         t_crit = t_crit / 1000
+        # warning(sprintf("UNITS: Using t_crit = %d SECONDS", t_crit))
     } else if (units == "us") {
         t_crit = t_crit / 1000000
+        # warning(sprintf("UNITS: Using t_crit = %d SECONDS", t_crit))
     } else if (units == "ns") {
         t_crit = t_crit / 1000000000
+        # warning(sprintf("UNITS: Using t_crit = %d SECONDS", t_crit))
     } else {
         stop("units must be either 's', 'ms', 'us', or 'ns'")
     }
