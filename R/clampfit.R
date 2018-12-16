@@ -26,7 +26,7 @@ clampfit.read <- function(filename, separating_factor=1000) {
     states           <- i_read[3] # column 3 are the conductance levels
     brst             <- list()
     brst[[1]]      <- sc(states,dwells,seg=1,start_time=0,name=util.basename(filename))
-    brst             <- bursts.start_times_update(brst,gaps=rep(max_dwell,0))
+    brst             <- bursts.start_times_update(brst,gaps=rep(max_dwells,0))
     return(brst)
 
 }
