@@ -21,7 +21,9 @@ A list of bursts.
 Data is in seconds.
 }
 \examples{
-\dontrun{
-seg <- scan.read('example_scan_output.scntxt')
-}
+
+infile <- system.file("extdata", "example.scntxt", package = "scbursts")
+seg <- scan.read(infile)
+head(seg)
+
 }

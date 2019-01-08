@@ -33,6 +33,7 @@ risetime.correct_gaussian <- function(Tr, segments, units="s") {
         
         if (units == "s") {         
             Trm = Tr * 1000
+            warning(sprintf("UNITS: Using risetime = %f SECONDS", Tr))
         } else if (units == "ms") {
             Trm = Tr
         } else if (units == "us") {

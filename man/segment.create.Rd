@@ -4,8 +4,8 @@
 \alias{segment.create}
 \title{Create a "segment" object}
 \usage{
-segment.create(states, dwells, seg = 1, start_time = 0,
-  name = "burst", ignore_errors = FALSE)
+segment.create(states, dwells, seg = 1, start_time = 0, name = "burst",
+  ignore_errors = FALSE)
 }
 \arguments{
 \item{states}{a vector of states in {0,1}}

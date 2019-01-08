@@ -5,6 +5,6 @@ build.Rout
 .RData
 *.tar.gz
 builds/*
-uottawaionchannel.Rcheck/
+scbursts.Rcheck/
 email-build.sh
 git-stuff.sh

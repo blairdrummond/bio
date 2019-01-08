@@ -18,7 +18,9 @@ A list of bursts (possibly a singleton)
 Read a .xlsx file output from clampfit. Result is a list of "segments", which is a dataframe extra data. See "segment" for more details. Converts millisecond dwells to seconds.
 }
 \examples{
-\dontrun{
-dwells <- clampfit.read('example.xlsx')
-}
+
+infile <- system.file("extdata", "example.xlsx", package = "scbursts")
+dwells <- clampfit.read(infile)
+head(dwells)
+
 }

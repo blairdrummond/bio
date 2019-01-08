@@ -7,5 +7,5 @@
 #' @export
 util.basename <- function(filename) {
     ### Remove the (.dwt|.evt) from filename
-    substr(basename(filename), 1, nchar(basename(filename)) - 4) 
+    sapply(strsplit(basename(filename),"\\."), function(x) paste(x[1:(length(x)-1)], collapse=".")) 
 }
