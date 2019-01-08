@@ -14,7 +14,7 @@
 clampfit.read <- function(filename, separating_factor=1000) {
 
     sc               <- segment.create
-    i_read           <- read.xls(filename,sheet=1,header=TRUE) #read in the .xlsx file
+    i_read           <- read.xls(filename,sheet=1,header=FALSE) #read in the .xlsx file
     names(i_read)[3] <- 'states'
     names(i_read)[9] <- 'dwells'
     dwells           <- i_read[9] # column 9 are the dwells
