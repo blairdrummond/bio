@@ -19,7 +19,7 @@ Read a .dwt file. Result is a list of "segments", which is a dataframe extra dat
 }
 \examples{
 
-infile <- system.file("extdata", "example.evt", package = "scbursts")
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 transitions <- evt.read(infile)
 dwells <- evt.to_dwells(transitions)
 

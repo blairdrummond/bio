@@ -8,11 +8,11 @@
 #' @return A Segment or multiple segments with corrected risetimes.
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
 #'
-#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #' 
 #' @export
 risetime.correct_gaussian <- function(Tr, segments, units="s") {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scan.R
 \name{scan.read}
 \alias{scan.read}
-\title{Read a scan results text file. scan.read returns a 1 segment dataframe.
+\title{Read a scan results text file. scan.read returns a 1 segment list
 Reads in scan results and puts them in the same format as the output
 of dwt.read. See 'dwt', and 'segment' for more information.}
 \usage{
@@ -15,15 +15,15 @@ scan.read(filename, separating_factor = 1000)
 seperate with a multple of the longest dwell.}
 }
 \value{
-A list of bursts.
+A list of recording segments from the scan file
 }
 \description{
 Data is in seconds.
 }
 \examples{
 
-infile <- system.file("extdata", "example.scntxt", package = "scbursts")
-seg <- scan.read(infile)
-head(seg)
+infile <- system.file("extdata", "example1_scan.txt", package = "scbursts")
+record <- scan.read(infile)
+head(record)
 
 }

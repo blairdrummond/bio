@@ -21,8 +21,9 @@ Order a list of bursts by some function. For instance, popen.
 }
 \examples{
 
-infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-dwells_c <- dwt.read(infile)
+infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+dwells <- dwt.read(infile)
+dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
 bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
 
 # A sorted list of bursts. 

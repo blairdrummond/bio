@@ -18,7 +18,7 @@ Extract header from hst file.
 \examples{
 
 # import some of the data included with the package
-infile <- system.file("extdata", "example.hst", package = "scbursts")
+infile <- system.file("extdata", "example1_hst.hst", package = "scbursts")
 
 open_table <- hst.read(infile, extract="open")
 closed_table <- hst.read(infile, extract="closed")

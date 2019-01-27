@@ -17,7 +17,7 @@ Converts dwell durations to absolute transition times.
 }
 \examples{
 
-dwells_file <- system.file("extdata", "example.dwt", package = "scbursts")
+dwells_file <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
 dwells <- dwt.read(dwells_file)
 
 transitions <- evt.from_dwells(dwells)

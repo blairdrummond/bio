@@ -1,14 +1,15 @@
 Package: scbursts
-Version: 0.40
-Date: 2018-09-12
+Version: 1.2
+Date: 2019-01-21
 Title: Single Channel Bursts Analysis
-Description: Single Channel Bursts Analysis for the daCosta Lab.
-Author: Blair Drummond <bdrum047@uottawa.ca>
-Maintainer: Blair Drummond <bdrum047@uottawa.ca>
-License: MIT + file LICENSE
+Description: Package for Single Ion-Channel Bursts Analysis. Designed to import and export from several existing pieces of ion-channel analysis software and provide tools for assisting with analysis.
+Author: Blair Drummomd [aut], Mathieu Dextraze [ctb]
+Maintainer: Blair Drummond <blair.robert.drummond@gmail.com>
+License: LGPL-2.1 + file LICENSE
 LazyData: true
 RoxygenNote: 6.1.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+	tinytex
 VignetteBuilder: knitr
 Imports: gdata

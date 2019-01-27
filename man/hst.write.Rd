@@ -23,7 +23,7 @@ Write bursts to a log10(ms)-sqrt(Frequency) .hst file from open and closed table
 }
 \examples{
 
-infile <- system.file("extdata", "example.hst", package = "scbursts")
+infile <- system.file("extdata", "example1_hst.hst", package = "scbursts")
 
 open = hst.read(infile, extract="open")
 closed = hst.read(infile, extract="closed")

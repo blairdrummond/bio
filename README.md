@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/100089287.svg)](https://zenodo.org/badge/latestdoi/100089287)
+
 # SCBursts - Single Channel Bursts Analysis
 
 This `R` Package was designed for use by the [daCosta lab](http://www.dacosta.net/). The package contains the following features:

@@ -23,7 +23,7 @@ Split segment at long pauses, dividing the segment into multiple -shorter- segme
 }
 \examples{
 
-infile <- system.file("extdata", "example.evt", package = "scbursts")
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 transitions <- evt.read(infile)
 dwells <- evt.to_dwells(transitions)
 dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")

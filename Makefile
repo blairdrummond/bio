@@ -1,5 +1,5 @@
 PACKAGE = scbursts
-VERSION = 0.40
+VERSION = 1.2
 
 all: deps docs build check
 
@@ -9,6 +9,7 @@ update-deps:
 	Rscript -e 'install.packages("rmarkdown", repos="http://cran.rstudio.com")'
 	Rscript -e 'install.packages("knitr",     repos="http://cran.rstudio.com")'
 	Rscript -e 'install.packages("readxl",     repos="http://cran.rstudio.com")'
+	Rscript -e 'install.packages("tinytex",   repos="http://cran.rstudio.com")'
 
 deps:
 	Rscript -e 'if (!require("devtools"))  install.packages("devtools",  repos="http://cran.rstudio.com")'
@@ -16,6 +17,7 @@ deps:
 	Rscript -e 'if (!require("rmarkdown")) install.packages("rmarkdown", repos="http://cran.rstudio.com")'
 	Rscript -e 'if (!require("knitr"))     install.packages("knitr",     repos="http://cran.rstudio.com")'	
 	Rscript -e 'if (!require("readxl"))     install.packages("readxl",     repos="http://cran.rstudio.com")'
+	Rscript -e 'if (!require("tinytex"))   install.packages("tinytex",   repos="http://cran.rstudio.com")'
 
 docs:
 	R -e 'devtools::document()'

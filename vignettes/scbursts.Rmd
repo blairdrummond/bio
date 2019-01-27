@@ -1,11 +1,11 @@
 ---
-title: "Single Channel Burst Analysis"
-author: "Blair Drummond"
+title: "Single Channel Burst Analysis with *scbursts*"
+author: Drummond et al.
 date: "`r Sys.Date()`"
 output: 
     pdf_document:
         toc: true
-bibliography: bibliography.bib
+bibliography: ./bibliography.bib
 vignette: >
   %\VignetteIndexEntry{scbursts}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,34 +13,43 @@ vignette: >
 header-includes:
     - \usepackage{tikz}
     - \usetikzlibrary{shapes,arrows}
+nocite: '@*'
 ---
 
-\nocite{*}
+**This guide is addressed to developers/programmers who might have to work with or extend scbursts. As programmers/developers can hopefully appreciate, this is a working document that will evolve as `scbursts` evolves. If any bugs are discovered, they can be reported on [the github page](https://github.com/dacostalab/scbursts), where they will hopefully be dealt with promptly.**
 
-This is a package designed to extract information on the stochastic properties of single molecules. It was originally designed for dwell time analysis of single channel data derived from patch clamp experiments. It contains functions for importing and exporting idealized stochastic events, as well as for displaying, analyzing and sorting dwells.
+This package is designed to extract information on the stochastic properties of single molecules. It was originally designed for dwell time analysis of single ion channel data derived from patch clamp experiments. It contains functions for importing and exporting idealized stochastic events; displaying, analyzing and correcting dwell durations; defining and sorting bursts, or clusters of bursts. `scbursts` can read and write, to and from, a variety of analysis software packages, including:
 
+| Program                         | Extension                  | URL                                                                                                                                                                                                                                        |
+| ------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| TAC                             | `evt`                      | [bruxton.com/TAC/index.html](https://www.bruxton.com/TAC/index.html)																																									    |
+| QUB                             | `dwt`                      | [qub.mandelics.com/](ihttps://qub.mandelics.com/)																																														    |
+| SCAN                            | `txt`                      | [github.com/DCPROGS](:https://github.com/DCPROGS)																																														    |
+| Clampfit                        | `xls`                      | [moleculardevices.com/products/axon-patch-clamp-system/acquisition-and-analysis-software/pclamp-software-suite](https://www.moleculardevices.com/products/axon-patch-clamp-system/acquisition-and-analysis-software/pclamp-software-suite) |
 
-**This manual is meant to give a high-level overview of the package. For the details of specific functions, use `help()` or consult the technical manual (or the source code)**
+`scbursts` is an open-source R package designed to be extensible -- support for new file formats is easily added, and since the project is written in `R`, new functionality will be introduced in the future. Those interested in requesting or adding new functionality are invited to create an issue or pull request on [the github page](https://github.com/dacostalab/scbursts), or [contact the dacosta\]:\[lab](https://www.dacosta.net/).
+
+**This manual gives a detailed overview on using `scbursts`. To learn more about the package, or if you would like to cite `scbursts`, please refer to the original publication. For details of specific functions, use `help()` or consult the technical manual (the source code is also available)**
 
 \tableofcontents
 
-# `.evt`s, `.dwt`s, and `.scntxt`s
+# `.evt`s, `.dwt`s, `.txt`s, and `.xls(x)`
 
-EVTs (Event files) and DWTs (Dwell times) are formats produced and required by several pieces of software that are used by the lab. In particular, TAC produces and uses `.evt` files and Mill uses `.dwt`s. So we need to read and write these files often, but they aren't ideal ways to represent our data, and so the only manipulations we want to do on `evt`s and `dwt`s is read and write them to data-types which are more natural in R. Those data-types which we prefer are **segments**, and **bursts**, which are detailed in the next sections. Segments are essentially tables of dwell times, and bursts are essentially lists of segments, but with meta-data attached to them. In any case **the first thing you want to do is convert your file into a list of segments**.
+`scbursts` can import data generated by a variety of single channel analysis suites, and thus in a number of different file formats, into the R environment. Data in these file formats is typically not native to the R environment, and so the relevant information (i.e. the sequence of dwell durations) must be extracted from each file as outlined below.
 
 ## Handling `.evt`s
 
-In the case of `evt` files, when reading in, files transition through three states:
+In the case of TAC `evt` files, when importing files into the R environment, data transition through three states:
 
 $$ \tt{evt\ file} \to \tt{Table\ of\ transition\ times} \to \tt{Table\ of\ dwells} $$
 
-So that in order to read an `evt` file, we must do something like
+In order to import a TAC `evt` file, type:
 
 ```{r, fig.show='hold', eval=FALSE, include = TRUE}
 # Load the library
 library(scbursts)
 
-infile <- "data/100uM.evt"
+infile <- "data/example1_tac.evt"
 
 # Import the evt as a table
 transitions <- evt.read(infile)
@@ -55,20 +64,20 @@ Writing to `evt`s **is not symmetrical** with reading them, as the dwell times a
 
 $$  \tt{Table\ of\ dwells} \to \tt{evt\ file} $$
 
-so that to write an `evt` you simply have to write
+To write an `evt`:
 
 ```{r, fig.show='hold', eval=FALSE, include = TRUE}
 # Write the corrected transition times to disk.
 evt.write(dwells_corrected, file="100uMc.evt")
 ```
 
-## Handling `.dwt`s
+## Handling QUB `.dwt`s
 
-`dwt`s are lists of dwell times, and so they convert to **segments** and **bursts** very naturally. To read and write, we simply write
+`dwt`s are lists of dwell times, and so they convert to **segments** and **bursts** very naturally. To read and write
 
 
 ```{r, fig.show='hold', eval=FALSE, include = TRUE}
-dwells <- dwt.read("60uM.dwt")
+dwells <- dwt.read("example1_qub.dwt")
 
 # ...
 # 
@@ -76,16 +85,34 @@ dwells <- dwt.read("60uM.dwt")
 # 
 # ...
 
-dwt.write(corrected_dwells, file="60uMc.dwt")
+dwt.write(corrected_dwells, file="example1_qub_corrected.dwt")
 ```
 
 
+## Handling SCAN files
+
+Importing SCAN files is equally simple. The one caveat is that SCAN often produces binary files, which `scbursts` **cannot read**, however there is another DCPROGS tool to convert these to `txt` files.
+
+```{r, fig.show='hold', eval=FALSE, include = TRUE}
+infile <- "data/example1_scan.txt"
+record <- scan.read(infile)
+head(record)
+```
 
 
+## Handling Clampfit files
+
+Importing clampfit files is also simple.
+
+```{r, fig.show='hold', eval=FALSE, include = TRUE}
+infile <- "data/example1_clampfit.xlsx"
+dwells <- clampfit.read(infile)
+head(dwells)
+```
 
 # Segments
 
-`.dwt` files record sequences of dwells, which alternate between open and closed states (at least, they should. Though this sometimes there are errors. This will be discussed later). There can be multiple "segments" of dwells
+`.dwt` files record sequences of open and closed dwell durations ("dwells"), where the single channel alternates between open (1) and closed (0) states (at least, they should. Though sometimes there are errors which cause recording to show more than a single 1 or 0 in succession. This will be discussed later). There can be multiple "segments" of dwells, each corresponding to a continuous stretch of idealized events.
 
 ```
 Segment: 1   Dwells: 4181
@@ -111,24 +138,26 @@ Segment: 2   Dwells: 7653
 .
 ```
 
-**segments** are the direct analog of this, but in R. They are individual stretches of dwells of open and closed states. We often have to deal with **lists of bursts**, such as when we read a `dwt` file (which usually has multiple segments).
+**segment** is also the name of the data-type `scbursts` defines (refer to `segment.R`), so that reading a `dwt` gives you a list of `segment`s (which is an `R` object, like a `data.frame`). Often one has that each segment is meant to correspond to a burst, and so when we say "bursts", typically we refer to a list of segments. As a consequence, there are also functions in `scbursts` such as `bursts.select` which make working with these lists more convenient.
 
+**The reason `dwt`s yield a list of segments is because there are often several continuous stretches of recording separated by pauses.**
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 # Load the library
 library(scbursts)
 
 # Import a pre-packaged file (stored inside the folder extdata)
-dwt_example <- system.file("extdata", "example.dwt", package = "scbursts")
+dwt_example <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
 
 # Import the evt as a table
 dwells <- dwt.read(dwt_example)
+length(dwells)
 
-# Just transition times and states
+# Transition times and states of first segment (units are in seconds)
 head(dwells[[1]])
 ```
 
-There are a number of different functions which act on segments, and that's why they're useful. The functions that one can use on segments start with `segment.`, *some* of the available functions are:
+There are a number of functions that act on segments. The functions pertaining to segments start with `segment.`, *some* of the available functions are:
 
 
 |        Function         |    Description                    |
@@ -137,73 +166,77 @@ There are a number of different functions which act on segments, and that's why 
 | `segment.closed_dwells` | Extract closed dwells as a vector |
 | `segment.count_open`    | Count number of openings          |
 | `segment.count_closed`  | Count number of closed            |
-| `segment.popen`         | Empirical P(Open) for interval    |
-| `segment.pclosed`       | Empirical P(Closed) for interval  |
+| `segment.popen`         | Empirical P(Open) for segment     |
+| `segment.pclosed`       | Empirical P(Closed) for segment   |
 | `segment.duration`      | Total segment duration            |
 | `segment.verify`        | Is the segment error free?        |
 
-While these can be used on a single segment, it's more likely that one will want to use these in conjunction with `bursts.select` in order to select a segments that have some property that is of interest. For instance, one can use these to isolate and analyze bursts with a high $P(Open)$. More on this in the next section.
+**An important point: segments are not just vectors, they also store meta-data that includes when the segment took place in the recording. This allows for replotting of the segments later in a way that is consistent with what the original time-series would have looked like. An example of this will be seen in the plots at the end of this document.** 
 
 # Bursts
 
-In the program, a **segment** is used to denote any contiguous sequence of dwells (plus some metadata); but a recording usually contains multiple segments, and the segments themselves usually (after analysis) contain many **bursts** seperated by long close times. This motivates us to talk about **lists of segments** often, and since these are often **bursts**, the functions that deal with lists of segments are lumped under functions that apply to bursts.
+In the Single Channel community, continuous stretches of open and closed dwells that correspond to the activity of a single ion channel are often referred to as **bursts** of single channel activity. **Bursts** are usually defined by a critical closed duration (\(t_{crit}\)), which is determined from analysis of a closed dwell duration histogram. This \(t_{crit}\) stipulates that openings separated by closings briefer than \(t_{crit}\) originate from the same burst of single-channel activity, while openings separated by closings longer than \(t_{crit}\) originate from different bursts (see Chapter 19, Section 5.5.1 of @colquhoun1995fitting).
 
-Since, `evt` recordings do not detect bursts, but also have multiple segments, one usually has to pass a recording into some burst detector, in order to isolate the bursts individually. So, for example, a function like `bursts.defined_by_tcrit` splits several segments (the segments from the recording) into multiple smaller segments (the bursts).
-
+An idiosyncrasy of the package has to be mentioned: In scbursts, the scientific notion of **bursts** and the program definition of `bursts` *usually* coincide, but not always. As mentioned, a `segment` denotes a contiguous sequence of idealized dwells, however idealized single channel recordings can be made up of one **or more** segments. Furthermore, each segment can contain multiple **bursts** (in the scientific sense). So the unfortunate side effect of this is that `scbursts` imports data files like `evt`s and `dwt`s as a list of recordings, which is a list of segments, so they "look like" `bursts`. Below is a little example of this: the problem is easily resolved; one just has to pass this list through a burst detector. So, for example, a function like `bursts.defined_by_tcrit` will break up the recordings into lists of bursts (using an input critical time). 
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 # Load the library
 library(scbursts)
 
 # Import a pre-packaged file (stored inside the folder extdata)
-infile <- system.file("extdata", "example.evt", package = "scbursts")
-
+infile <- system.file("extdata", "example2_qub.dwt", package = "scbursts")
 
 # Import the evt as a table
-tables <- evt.read(infile)
+records <- dwt.read(infile)
 
-# Turn the transition times into dwells
-records <- evt.to_dwells(tables)
+# The number of records
+length(records)
 
-# Correct the risetime (default time in seconds)
-records_c <- risetime.correct_gaussian(Tr=35.0052278,records, unit="us")
+# Correct the risetime (= Tr) (default time in seconds)
+records_c <- risetime.correct_gaussian(Tr=35.0052278,records, units="us")
 
-length(records_c)
 
-# Define critical time (tcrit=0.1s)
-bursts <- bursts.defined_by_tcrit(records_c , 0.1, units="ms")
+# Define critical time (tcrit=100 ms)
+# However, now we can use a `bursts` function, `bursts.defined_by_tcrit`
+# to turn the records into actual bursts
+bursts <- bursts.defined_by_tcrit(records_c , 100, units="ms")
 
+# The number of bursts
 length(bursts)
 
 ## Now you can carry out analysis of the bursts
 ```
 
-Turning a list of recorded segments into a single list of bursts will lose some information about which original segment the bursts belonged to, and the program will issue a warning to let you know this. This will be discussed a bit more in the section on writing bursts back to disk.
+**Some comments on the warning messages:**
 
-There are a few things that we might be interested in doing to bursts.
+1. The first warning message informs you that there is a recording error present in the first part of the recording. How this happens and what it means is explained later in this document.
+
+2. The second warning message informs you that two or more records were in the file, and they are getting concatenated together. So burst `n` might belong to the first record, and burst `n+1` might belong to the second record.
+
+3. The third warning is a  return of the first warning. The recording error from the first record was inside of burst 24. In light of this, we can just delete that burst and then proceed with our analysis
+
+Since **bursts** are attributable to the activity of a single channel, **bursts** are the units that we are interested in for kinetic analysis of single ion channels. `scbursts` can perform many functions on **bursts**. 
 
 ### Taking a subset
 
-We might not always be interested in all the bursts, but perhaps bursts that have some characteristic, such as a high *P(Open)*. So, rather than using the full list, we might want to extract a few bursts. The question is, "how would we do that?" and the answer is, combine the functions we have for **segments** and `bursts.select`.
-
+We might not always be interested in all the bursts, but perhaps bursts that have some characteristic, such as a high *P(Open)*. For instance, often one wants to discard aberrant (our outlier) bursts prior to kinetic analysis. So, rather than using the full list of bursts, we might want to extract a few bursts. Here's how you do that:
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 # Load the library
 library(scbursts)
 
 # Import a pre-packaged file (stored inside the folder extdata)
-infile <- system.file("extdata", "example.evt", package = "scbursts")
-
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 
 # Import the evt as a table
 tables <- evt.read(infile)
 records <- evt.to_dwells(tables)
 
 # Correct the risetime (default time in seconds)
-records_c <- risetime.correct_gaussian(Tr=35.0052278,records, unit="us")
+records_c <- risetime.correct_gaussian(Tr=35.0052278,records, units="us")
 
-# Define critical time (tcrit=0.1s)
-bursts <- bursts.defined_by_tcrit(records_c , 0.1, units="ms")
+# Define critical time (tcrit=100 ms)
+bursts <- bursts.defined_by_tcrit(records_c , 100, units="ms")
 
 high_popen <- function (seg) {
     segment.popen(seg) > 0.7
@@ -212,15 +245,15 @@ high_popen <- function (seg) {
 high_bursts <- bursts.select(bursts, high_popen)
 ```
 
-This will return a list of bursts which you can work on, and you can remove more bursts as you wish until you have what you're looking for. If you want to extract bursts and write them to file (for instance, for processing by MILL), you can use the line
+This will return a list of bursts which you can work on, and you can remove more bursts as you wish until you have what you're looking for. If you want to extract bursts and write them to file (for instance, for processing by MIL/QUB), you can use the line
 
 ```{r, fig.show='hold', eval=FALSE, include = TRUE}
 high_bursts <- bursts.select(bursts, high_popen, one_file=TRUE)
 ```
 
-and this will extract the high P(Open) bursts **as a single segment**, which can then be written to a single `dwt` file. The advantage of using this trick, is that this particular function can write the bursts to a single segment **and preserve the amount of time that actually took place between the bursts**. In order to do this manually, you have to use `bursts.recombine`.
+and this will extract the high P(Open) bursts **as a single segment**, which can then be written to a single `dwt` file. The advantage of using this trick, is that this particular function can write the bursts to a single segment **and preserve the amount of time that actually took place between the bursts**. (In order to do this manually, you have to use `bursts.recombine`.)
 
-### A Special Case (Correcting Recording Errors)
+### An Example: Correcting Recording Errors
 
 As a specific example, when using actual recorded data, there are sometimes errors where multiple openings or closings are recorded in succession
 
@@ -229,8 +262,8 @@ Segment: 1   Dwells: 4181
 	1	0.000150
 	0	0.000900
 	1	0.078490
-	1	0.078490
-	1	0.078490
+	1	0.046750    <- this doesn't make sense
+	1	0.037790
 	0	1.910400
 	1	0.421490
 	0	1.896120
@@ -239,31 +272,33 @@ Segment: 1   Dwells: 4181
 .
 ```
 
-this is obviously physically impossible, but sometimes appears in the data. To correct this, one would seperate the recording into bursts (as usual) and then remove the burst where the error occurred.
+this is obviously *physically* impossible, but sometimes appears in the data. To correct this, one would separate the recording into bursts (as usual) and then remove the burst where the error occurred.
 
-
-```{r, fig.show='hold', eval=FALSE, include = TRUE}
-library(scbursts)
-infile <- "faulty_dwells.dwt"
+```{r, eval=TRUE, include=TRUE}
+# library(scbursts)
+infile <- system.file("extdata", "example2_qub.dwt", package = "scbursts")
 
 # This will raise a warning message to alert you that the data has problems
 dwells <- dwt.read(infile)
 
-dwells_c <- risetime.correct_gaussian(Tr=0.0000350052278,dwells)
+dwells_c <- risetime.correct_gaussian(Tr=35.0052278,dwells, units="us")
 
 # This will also raise a warning message to alert you that specific bursts have problems
-bursts <- bursts.defined_by_tcrit(dwells_c,0.1)
+bad_bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
+
+length(bad_bursts)
 
 # This will remove the problems. It will leave only the good bursts.
-bursts <- bursts.select(bursts, segment.verify)
+fixed_bursts <- bursts.select(bad_bursts, segment.verify)
+
+length(fixed_bursts)
 ```
 
-In a related problem, sometimes one might want to discard the first and last burst, as you might now know whether or not you began recording in the middle of a burst (so the depiction of burst behaviour would be innaccurate). You can fix this with `bursts.remove_first_and_last`.
+In a related problem, sometimes one might want to discard the first and last burst, as you might now know whether or not you began recording in the middle of a burst (so the depiction of burst behavior would be inaccurate). You can fix this with `bursts.remove_first_and_last`.
 
-## Writing bursts back to files
+## (Advanced) Writing bursts back to files
 
-We mentioned that we could take a segment, split it into bursts, remove some bursts, and then write back to file. We mentioned a short-cut to do this, but also that this could be done manually. This requires the use of `bursts.recombine`. The tool isn't trivial, because it preserves the elapsed time between the bursts when rejoining them. But, we also mentioned that recordings could contain multiple segments, but what was not emphasised was that this means that **we usually have no idea how much time transpires between segments**. However, despite this, there are times where we want to merge all bursts as though they were occurring in one segment. For this reason, **we need a function to artifically insert gaps between bursts**. We often use these in conjunction, with something like
-
+We mentioned that we could take a segment, split it into bursts, remove some bursts, and then write back to file. We mentioned a short-cut to do this, but also that this could be done manually. This requires the use of `bursts.recombine`. The tool isn't trivial, because it preserves the elapsed time between the bursts when rejoining them. But, we also mentioned that recordings could contain multiple segments, but what was not emphasized was that this means that **we usually have no idea how much time transpires between segments**. However, despite this, there are times where we want to merge all bursts as though they were occurring in one segment. For this reason, **we need a function to artificially insert gaps between bursts**.  We often use these in conjunction, with something like
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 # If you have multiple records, you can recombine them with
@@ -272,13 +307,27 @@ records <- bursts.space_out(records, sep_factor=1000)
 record <- bursts.recombine(records)
 ```
 
-There are scenarios wheere this is probably the most natural way to create a single segment with all the data you're interested in. If you are interested in playing around with the spacing between bursts (for example, the closings that exceeded a critical time), you can also look at `bursts.get_gaps` which extracts this information as a vector.
+The different recording segments will have a substantial amount of time between them, which should be discernible by eye. For example:
+
+```{r, eval=TRUE, include=TRUE}
+# From example2_qub.dwt
+times  <- sapply(fixed_bursts, segment.start_time)
+popens <- sapply(fixed_bursts, segment.popen)
+
+plot(times,popens, main="P(Open) Time Series with two records", ylab="P(Open) per Burst",
+xlab="bursts seen over time (s)", ylim=c(0,1))
+lines(times, popens)
+```
+
+There are scenarios where this is probably the most natural way to create a single segment with all the data you're interested in. If you are interested in playing around with the spacing between bursts (for example, the closings that exceeded a critical time), you can also look at `bursts.get_gaps` which extracts this information as a vector.
+
+**NOTE: Because of the --arbitrary-- long gaps between bursts, the time series data produced in this way cannot be used for some types of analyses. One should be aware of this and know when to conduct analysis on a single recording segment instead of over all recordings at once. The reader who wants to change the spacing between records may look at `bursts.start_times_update`**
 
 ## Sorting and more
 
 In addition to taking a subset of bursts according to some criteria, one might want to sort bursts according to some metric, or simply get tabulated values of some metric. For example, what is the average P(Open) across all bursts? Or what do the bursts look like when we rank them by P(Open)?
 
-Sorting is implemented by `bursts.sort`. It requires only a metric on segments - a function which takes a segment and gives you a number.
+Sorting is implemented by `bursts.sort`. It requires only a metric on segments - a function which takes a segment and gives you a number. For example:
 
 ```{r, eval=TRUE, include = TRUE}
 # Create a list of bursts, sorted by your chosen function
@@ -323,7 +372,7 @@ for (i in 1:length(records)) {
 }
 
 # Write the corrected record to a .dwt file
-dwt.write(corrected_records, file="60uMc.dwt")
+dwt.write(corrected_records, file="example1_qub_corrected.dwt")
 ```
 
 and this simplified code
@@ -333,7 +382,7 @@ and this simplified code
 records_c <- risetime.correct_gaussian(Tr=35.0052278, records, units="us")
 
 # Write the corrected record to a .dwt file
-dwt.write(records_c, file="60uMc.dwt")
+dwt.write(records_c, file="example1_qub_corrected.dwt")
 ```
 
 but this is not always true, and not every function can be made to work on either. You may have to write your own functions, use for loops, or use `sapply` (or `lapply`) in order to do everything that you want to do. 
@@ -348,7 +397,7 @@ It was skimmed over, but risetime correction on the recordings can be accomplish
 library(scbursts)
 
 # Import a pre-packaged file (stored inside the folder extdata)
-infile <- system.file("extdata", "example.evt", package = "scbursts")
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 
 
 # Import the evt as a table
@@ -358,23 +407,39 @@ tables <- evt.read(infile)
 records <- evt.to_dwells(tables)
 
 # Correct the risetime (default time in seconds)
-records_c <- risetime.correct_gaussian(Tr=35.0052278,records, unit="us")
+records_c <- risetime.correct_gaussian(Tr=35.0052278,records, units="us")
 
 evt.write(records_c, file="example_corrected.evt")
 ```
 
-As the name of the function suggests, the current risetime correction attempts to undo the effects of a guassian filter. This method might not be optimal, and may be replaced later. For a more detailed explanation, see section 4.1.1 of Colquhoun and Sigworth, "Fitting and Analysis of Single-Channel segments".
+As the name of the function suggests, the current risetime correction attempts to undo the effects of a Gaussian filter. This method might not be optimal, and may be replaced later. For a more detailed explanation, see Section 4.1.1 of @colquhoun1995fitting.
 
 
 # Plotting
 
-Pictures provide better explanations than words in this case. 
-
-## Open times and closed times
+Here are example of a few common plots one might want.
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
-open_dwells <- segment.open_dwells(record) / 1000
-hist(log10(open_dwells), axes=FALSE, breaks=30)
+library(scbursts)
+
+infile <- system.file("extdata", "example2_tac.evt", package = "scbursts")
+transitions <- evt.read(infile)
+dwells <- evt.to_dwells(transitions)
+
+# Skipping risetime correction
+bursts <- bursts.defined_by_tcrit(dwells,92,units='ms')
+
+# We will be plotting with this
+record <- bursts.recombine(bursts)
+```
+
+**NOTE: If you merge multiple records into one, you might artificially add some --huge-- closed dwells separating bursts. These will add a few high closed-times the histogram.**
+
+## Open times and closed times (uncorrected)
+
+```{r, fig.show='hold', eval=TRUE, include = TRUE}
+open_dwells <- segment.open_dwells(record)
+hist(log10(open_dwells), axes=FALSE, breaks=length(record$dwells)/100)
 cplot.log_root_axes(open_dwells)
 ```
 
@@ -382,43 +447,50 @@ cplot.log_root_axes(open_dwells)
 
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
-closed_dwells <- segment.closed_dwells(record) / 1000
-hist(log10(closed_dwells), axes=FALSE, breaks=30)
+closed_dwells <- segment.closed_dwells(record)
+hist(log10(closed_dwells), axes=FALSE, breaks=length(record$dwells)/100)
 cplot.log_root_axes(closed_dwells)
 ```
 
+**The outlier on the far right may be due to merging multiple records into one, as mentioned earlier.**
 
 \newpage
 
-
-## P(Open) and P(Closed)
+## P(Open) (uncorrected)
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 popens <- bursts.popens(bursts)
-hist(popens, breaks=20)
+hist(popens, xlab="Burst P(Open)", breaks=30, xlim=c(0,1))
 ```
+
+P(Closed) is similar.
 
 \newpage
 
-```{r, fig.show='hold', eval=TRUE, include = TRUE}
-pcloseds <-bursts.pcloseds(bursts)
-hist(pcloseds, breaks=20)
-```
+## Time Series (uncorrected)
 
-\newpage
+A basic example
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 # To make this more visible, you can also export it as a large `.png` file
 cplot.popen_ts(bursts)
 ```
 
-
 \newpage
 
-```{r, fig.show='hold', eval=TRUE, include = TRUE}
-# Or, so look at a subregion 
-cplot.popen_ts(bursts, xlim=c(0,0.1))
+`cplot.popen_ts` is just for convenience, you can also just just manually do the plotting. Also, `scbursts` automatically handles data that contains multiple records by inserting a comically large amount of time between records. `scbursts` issues warnings when this happens, and one should heed those warnings. The time-series data produced in this way is suitable for visualization, but **it is not suitable for fitting some types of models**. Just be wary of this.
+
+```{r, eval=TRUE, include=TRUE}
+# From example2_qub.dwt
+times  <- sapply(fixed_bursts, segment.start_time)
+popens <- sapply(fixed_bursts, segment.popen)
+
+plot(times,popens, main="P(Open) Time Series with two records", ylab="P(Open) per Burst",
+xlab="bursts seen over time (s)", ylim=c(0,1))
+lines(times, popens)
 ```
+
+
 
 # Example Workflows
 
@@ -429,7 +501,7 @@ cplot.popen_ts(bursts, xlim=c(0,0.1))
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 library(scbursts)
 
-infile <- system.file("extdata", "example.dwt", package = "scbursts")
+infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
 dwells <- dwt.read(infile)
 # dwells <- dwt.read('example1.dwt')
 
@@ -446,13 +518,13 @@ head(dwells[[1]])
 ## EVT
 
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
-infile <- system.file("extdata", "example.evt", package = "scbursts")
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 transitions <- evt.read(infile)
 
 # transitions <- evt.read("July28-6.evt")
 
 dwells <- evt.to_dwells(transitions)
-dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 
 # Get Header
 header <- evt.extract_header(infile)
@@ -467,16 +539,16 @@ head(dwells_c[[1]])
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 library(scbursts)
 
-infile <- system.file("extdata", "example.scntxt", package = "scbursts")
+infile <- system.file("extdata", "example1_scan.txt", package = "scbursts")
 dwells <- scan.read(infile)
-# dwells <- scan.read('example1_scan.txt')
+dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 
-bursts <- bursts.defined_by_tcrit(dwells,100,units='ms')
+bursts <- bursts.defined_by_tcrit(dwells_c,100,units='ms')
 twoplus <- function(seg){
 		return(segment.count_open(seg)>=2)
 }
 bursts_twoplus <- bursts.select(bursts,twoplus)
-head(dwells[[1]])
+head(bursts_twoplus[[1]])
 ```
 
 
@@ -486,16 +558,16 @@ head(dwells[[1]])
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 library(scbursts)
 
-infile <- system.file("extdata", "example_qub.dwt", package = "scbursts")
+infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
 dwells <- dwt.read(infile)
-# dwells <- dwt.read('example1_qub.dwt')
+dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 
-bursts <- bursts.defined_by_tcrit(dwells,100,units='ms')
+bursts <- bursts.defined_by_tcrit(dwells_c,100,units='ms')
 twoplus <- function(seg){
 		return(segment.count_open(seg)>=2)
 }
 bursts_twoplus <- bursts.select(bursts,twoplus)
-head(dwells[[1]])
+head(bursts_twoplus[[1]])
 ```
 
 
@@ -505,14 +577,19 @@ head(dwells[[1]])
 ```{r, fig.show='hold', eval=TRUE, include = TRUE}
 library(scbursts)
 
-infile <- system.file("extdata", "example.xlsx", package = "scbursts")
+infile <- system.file("extdata", "example1_clampfit.xlsx", package = "scbursts")
 dwells <- clampfit.read(infile)
-# dwells <- clampfit.read('Figure1.xlsx')
+dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 
-bursts <- bursts.defined_by_tcrit(dwells,100,units='ms')
+bursts <- bursts.defined_by_tcrit(dwells_c,100,units='ms')
 twoplus <- function(seg) {
     return(segment.count_open(seg)>=2)
 }
 bursts_twoplus <- bursts.select(bursts,twoplus)
-head(dwells[[1]])
+head(bursts_twoplus[[1]])
 ```
+
+\nocite{*}
+
+# References
+

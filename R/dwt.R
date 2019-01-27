@@ -6,7 +6,7 @@
 #' @param append Add ot the end of a file or overwrite? (defaults to false)
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
 #' 
@@ -65,7 +65,7 @@ dwt.write <- function(segments, file="", seg=1, append=FALSE) {
 #' @return A list of bursts (possibly a singleton)
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
 #' 
@@ -112,7 +112,7 @@ dwt.read <- function (filename, separating_factor=1000) {
         
         states <- table[,c1[[2]]]
 
-        bursts[[i]] <- segment.create(states, dwells, seg=i, start_time=0, name=util.basename(filename))
+        bursts[[i]] <- segment.create(states, dwells, seg=i, start_time=0, name=util.basename(filename), ignore_errors = TRUE)
     }
 
     bursts <- bursts.start_times_update(bursts,gaps=rep(max_dwell,length(segs)-2))
@@ -121,9 +121,9 @@ dwt.read <- function (filename, separating_factor=1000) {
     if (any(lapply(bursts, segment.verify) == FALSE)) {
 
         if (length(which(unlist(lapply(bursts, segment.verify)) == FALSE)) == 1)
-            warning(paste('Burst', (which(unlist(lapply(bursts, segment.verify)) == FALSE)), 'seems to have been misrecorded!'))
+            warning(paste('Burst (or record)', (which(unlist(lapply(bursts, segment.verify)) == FALSE)), 'seems to have been misrecorded!'))
         else
-            warning(paste('Bursts', (which(unlist(lapply(bursts, segment.verify)) == FALSE)), 'seem to have been misrecorded!'))
+            warning(paste('Bursts (or records)', (which(unlist(lapply(bursts, segment.verify)) == FALSE)), 'seem to have been misrecorded!'))
     }
 
     return(bursts)

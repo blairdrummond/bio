@@ -21,7 +21,7 @@ Undo the effect of the gaussian filter. See section 4.1.1 of Colquhoun and Sigwo
 }
 \examples{
 
-infile <- system.file("extdata", "example.evt", package = "scbursts")
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 transitions <- evt.read(infile)
 dwells <- evt.to_dwells(transitions)
 

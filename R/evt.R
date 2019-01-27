@@ -6,7 +6,7 @@
 #' @examples
 #'
 #' # import some of the data included with the package
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #' transitions <- evt.read(infile)
 #'
 #' head(transitions[[1]])
@@ -68,17 +68,17 @@ evt.read <- function (filename) {
 #' @return A string containing the header
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #'
 #' # Get Dwells
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
-#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #'
 #' # Get Header
 #' header <- evt.extract_header(infile)
 #'
-#' evt.write(dwells_c, header=header, file="fixed_example.evt")
+#' evt.write(dwells_c, header=header, file="fixed_example1_tac.evt")
 #' 
 #' @export
 #' @importFrom utils tail
@@ -120,17 +120,17 @@ evt.extract_header <- function (filename) {
 #' @param header The header information for the evt file, if available
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #'
 #' # Get Dwells
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
-#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #'
 #' # Get Header
 #' header <- evt.extract_header(infile)
 #'
-#' evt.write(dwells_c, header=header, file="fixed_example.evt")
+#' evt.write(dwells_c, header=header, file="fixed_example1_tac.evt")
 #' 
 #' @export
 #' @importFrom utils read.csv
@@ -212,7 +212,7 @@ Sweeps
 #'
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
 #' head(dwells[[1]])
@@ -287,7 +287,7 @@ evt.to_dwell <- function(table) {
 #' @return A dataframe or multiple dataframes of states and transition times
 #' @examples
 #' 
-#' dwells_file <- system.file("extdata", "example.dwt", package = "scbursts")
+#' dwells_file <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
 #' dwells <- dwt.read(dwells_file)
 #' 
 #' transitions <- evt.from_dwells(dwells)

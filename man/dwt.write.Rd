@@ -20,7 +20,7 @@ Write a dwt file to disk. Writes DOS line endings. Dwells are in milliseconds
 }
 \examples{
 
-infile <- system.file("extdata", "example.evt", package = "scbursts")
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 transitions <- evt.read(infile)
 dwells <- evt.to_dwells(transitions)
 

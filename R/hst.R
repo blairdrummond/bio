@@ -9,7 +9,7 @@
 #' @examples
 #'
 #' # import some of the data included with the package
-#' infile <- system.file("extdata", "example.hst", package = "scbursts")
+#' infile <- system.file("extdata", "example1_hst.hst", package = "scbursts")
 #' open_hst   <- hst.read(infile, extract="open")
 #' closed_hst <- hst.read(infile, extract="closed")
 #'
@@ -93,7 +93,7 @@ hst.read <- function (filename, extract="open", raw=FALSE) {
 #' @examples
 #' 
 #' # import some of the data included with the package
-#' infile <- system.file("extdata", "example.hst", package = "scbursts")
+#' infile <- system.file("extdata", "example1_hst.hst", package = "scbursts")
 #'
 #' open_table <- hst.read(infile, extract="open")
 #' closed_table <- hst.read(infile, extract="closed")
@@ -121,7 +121,7 @@ hst.extract_header <- function (filename) {
 #' @param fromraw Unless FALSE, assume we need to write a log10(milliseconds)-sqrt(Frequency) plot
 #' @examples
 #'
-#' infile <- system.file("extdata", "example.hst", package = "scbursts")
+#' infile <- system.file("extdata", "example1_hst.hst", package = "scbursts")
 #' 
 #' open = hst.read(infile, extract="open")
 #' closed = hst.read(infile, extract="closed")

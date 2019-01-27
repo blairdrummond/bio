@@ -19,7 +19,7 @@ Calculate pulse lengths. Converts transition times to dwell durations.
 }
 \examples{
 
-infile <- system.file("extdata", "example.evt", package = "scbursts")
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 transitions <- evt.read(infile)
 dwells <- evt.to_dwells(transitions)
 head(dwells[[1]])

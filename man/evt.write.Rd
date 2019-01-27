@@ -18,7 +18,7 @@ Write bursts to a .evt file.
 }
 \examples{
 
-infile <- system.file("extdata", "example.evt", package = "scbursts")
+infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 
 # Get Dwells
 transitions <- evt.read(infile)
@@ -28,6 +28,6 @@ dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
 # Get Header
 header <- evt.extract_header(infile)
 
-evt.write(dwells_c, header=header, file="fixed_example.evt")
+evt.write(dwells_c, header=header, file="fixed_example1_tac.evt")
 
 }

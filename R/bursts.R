@@ -11,12 +11,12 @@
 #' starting and ending in 1 states (open dwell)
 #' @examples
 #'
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
-#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #'
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' head(bursts[[1]])
 #'
 #' @export
@@ -37,12 +37,13 @@ bursts.defined_by_tcrit <- function(segments, t_crit, units="s") {
 
     if (!is.data.frame(segments)) {
         ## Merge all the bursts into one long list.
-        warning('Merging all recordings into one recording.')
-        segment <- bursts.recombine(bursts.space_out(segments, sep_factor = 2*t_crit))
+        if (length(segments) > 1) {
+            warning('Merging all recordings into one recording. A large (but arbitrary) amount of time will seperate the recordings.')
+        }
+        segment <- bursts.recombine(bursts.space_out(segments, sep_factor = max(10, 10*t_crit)))
     } else {
         segment <- segments
     }
-    
     
 
     ### Find all gaps
@@ -51,7 +52,6 @@ bursts.defined_by_tcrit <- function(segments, t_crit, units="s") {
     }
     pauses <- gap_func(segment)
     pauses <- c(c(TRUE),pauses,c(TRUE)) ### Causes first and last burst to be included
-
 
 
 
@@ -65,7 +65,7 @@ bursts.defined_by_tcrit <- function(segments, t_crit, units="s") {
         }
         
         if (pauses[i]) {
-            return(segment$dwells[i])
+            return(segment$dwells[i-1])
         } else {
             return (NULL)
         }
@@ -100,7 +100,6 @@ bursts.defined_by_tcrit <- function(segments, t_crit, units="s") {
     
     ### Create list of bursts (indices only)
     burst_selectors <- Filter(Negate(is.null), sapply(1:length(pauses), find_next))
-
 
 
     ### Select the bursts using the indices
@@ -176,12 +175,12 @@ bursts.start_times_update <- function (bursts, gaps) {
 #' @param bursts The list of segments
 #' @return A vector of N+1 gaps for N bursts times
 #' @examples
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
-#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #'
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' gaps <- bursts.get_gaps(bursts)
 #'
 #' head(gaps)
@@ -234,12 +233,12 @@ bursts.get_gaps <- function (bursts) {
 #' @return A shorter list of bursts
 #' @examples
 #'
-#' infile <- system.file("extdata", "example.evt", package = "scbursts")
+#' infile <- system.file("extdata", "example1_tac.evt", package = "scbursts")
 #' transitions <- evt.read(infile)
 #' dwells <- evt.to_dwells(transitions)
-#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, unit="us")
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #'
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #'
 #' # If there seem to be bad bursts at the ends
 #' bursts <- bursts.remove_first_and_last(bursts)
@@ -265,10 +264,11 @@ bursts.remove_first_and_last <- function (bursts) {
 #' @return The segment containing all bursts.
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-#' dwells_c <- dwt.read(infile)
+#' infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+#' dwells <- dwt.read(infile)
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #'
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #'
 #' # This is a single segment!
 #' record <- bursts.recombine(bursts)
@@ -301,7 +301,7 @@ bursts.recombine <- function (bursts) {
 #' Either the factor in seconds, or a multiple of the longest observed dwell.
 #' @return The segments again, but with modified meta-data.
 #' @examples
-#' infile <- system.file("extdata", "example.dwt", package = "scbursts")
+#' infile <- system.file("extdata", "example2_qub.dwt", package = "scbursts")
 #' dwells <- dwt.read(infile)
 #'
 #' # Still a list, but the meta-data is fixed
@@ -343,15 +343,14 @@ bursts.space_out <- function (segments, sep_factor=1000) {
 #' @examples
 #' 
 #' high_popen <- function (seg) {
-#'
 #'     segment.popen(seg) > 0.7
-#' 
 #' }
 #'
-#' infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-#' dwells_c <- dwt.read(infile)
+#' infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+#' dwells <- dwt.read(infile)
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #'
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' 
 #' subset <- bursts.select(bursts, high_popen)
 #'
@@ -393,33 +392,24 @@ bursts.select <- function (bursts, func, one_file=FALSE) {
     }
 
 
-    
-
-
     ## Add the last gap (if necessary)
     last_burst    <-   bursts[[length(bursts)]]
     last_filtered <- filtered[[length(filtered)]]
     if (segment.start_time(last_filtered) != segment.start_time(last_burst)) {
 
-        end <- segment.start_time(last_burst) + segment.duration(last_burst)
-        
+        end <- segment.start_time(last_burst) + segment.duration(last_burst)      
         len <- end - (segment.duration(last_filtered) + segment.start_time(last_filtered))
-        
         gaps <- append(gaps, len)
-        
+
     } 
     
     
-    
-
-    
     faux_segment <- function (dwell) {
-        segment.create(c(0),c(dwell))
+        segment.create(c(0),c(dwell), ignore_errors=TRUE)
     }
 
     ## list of size one dataframes
     faux_segs <- lapply(gaps, faux_segment)
-
 
     ## https://stackoverflow.com/questions/16443260/interleave-lists-in-r
     if (interleave_gaps_first) {
@@ -442,7 +432,7 @@ bursts.select <- function (bursts, func, one_file=FALSE) {
     ## NOTE: I should probably be doing this in a better way
     attr(flat, "name") <- attr(bursts[[1]], "name")
     attr(flat, "seg")  <- 1
-    attr(flat, "start_time")  <- 0
+    attr(flat, "start_time") <- 0
 
     return (flat)
     
@@ -463,9 +453,10 @@ bursts.select <- function (bursts, func, one_file=FALSE) {
 #' @return A list sorted by func. By default in ascending order (unless reversed)
 #' @examples
 #'
-#' infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-#' dwells_c <- dwt.read(infile)
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+#' dwells <- dwt.read(infile)
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' 
 #' # A sorted list of bursts. 
 #' sorted <- bursts.sort(bursts, segment.popen)
@@ -503,9 +494,11 @@ bursts.sort <- function (bursts, func, reverse=FALSE) {
 #' @return The popen values
 #' @examples
 #'
-#' infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-#' dwells_c <- dwt.read(infile)
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+#' dwells <- dwt.read(infile)
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
+#' 
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' 
 #' popens <- bursts.popens(bursts)
 #' hist(popens)
@@ -523,9 +516,10 @@ bursts.popens <- function (bursts) {sapply(bursts, segment.popen)}
 #' @return The pclosed values
 #' @examples
 #'
-#' infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-#' dwells_c <- dwt.read(infile)
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+#' dwells <- dwt.read(infile)
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' 
 #' pcloseds <- bursts.popens(bursts)
 #' hist(pcloseds)

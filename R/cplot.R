@@ -3,9 +3,10 @@
 #' @param points The data to plot
 #' @examples
 #'
-#' infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-#' dwells_c <- dwt.read(infile)
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+#' dwells <- dwt.read(infile)
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' 
 #' open_dwells <- segment.open_dwells(bursts.recombine(bursts))
 #' hist(log10(open_dwells), axes=FALSE, breaks=30)
@@ -61,9 +62,10 @@ cplot.log_root_axes <- function (points) {
 #' @param xlim Pass xlim argument to plot() to focus on window of time series
 #' @examples
 #'
-#' infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-#' dwells_c <- dwt.read(infile)
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+#' dwells <- dwt.read(infile)
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' 
 #' cplot.popen_ts(bursts, "P(Open) Time Series, 2018-09-20")
 #'
@@ -76,7 +78,7 @@ cplot.popen_ts <- function(bursts, main="P(Open) Time Series", xlim=NULL) {
     times  <- sapply(bursts, segment.start_time)
     popens <- sapply(bursts, segment.popen)
 
-    plot(times,popens, main=main, ylab="P(Open)", xlab="time", ylim=c(0,1), xlim = XLIM)
+    plot(times,popens, main=main, ylab="P(Open)", xlab="time (s)", ylim=c(0,1), xlim = XLIM)
     lines(times, popens)
 
 }
@@ -91,9 +93,10 @@ cplot.popen_ts <- function(bursts, main="P(Open) Time Series", xlim=NULL) {
 #' @param xlim Pass xlim argument to plot() to focus on window of time series
 #' @examples
 #'
-#' infile <- system.file("extdata", "example_corrected.dwt", package = "scbursts")
-#' dwells_c <- dwt.read(infile)
-#' bursts <- bursts.defined_by_tcrit(dwells_c, 1.511842, units="s")
+#' infile <- system.file("extdata", "example1_qub.dwt", package = "scbursts")
+#' dwells <- dwt.read(infile)
+#' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
+#' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
 #' 
 #' cplot.pclosed_ts(bursts, "P(Closed) Time Series, 2018-09-20")
 #'
@@ -106,7 +109,7 @@ cplot.pclosed_ts <- function(bursts, main="P(Closed) Time Series", xlim=NULL) {
     times  <- sapply(bursts, segment.start_time)
     pcloseds <- sapply(bursts, segment.pclosed)
 
-    plot(times,pcloseds, main=main, ylab="P(Closed)", xlab="time", ylim=c(0,1), xlim=XLIM)
+    plot(times,pcloseds, main=main, ylab="P(Closed)", xlab="time (s)", ylim=c(0,1), xlim=XLIM)
     lines(times, pcloseds)
 
 }

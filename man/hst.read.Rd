@@ -22,7 +22,7 @@ Read a MIL ".hst" file to a table. By default these files are in log10(Milliseco
 \examples{
 
 # import some of the data included with the package
-infile <- system.file("extdata", "example.hst", package = "scbursts")
+infile <- system.file("extdata", "example1_hst.hst", package = "scbursts")
 open_hst   <- hst.read(infile, extract="open")
 closed_hst <- hst.read(infile, extract="closed")
 
