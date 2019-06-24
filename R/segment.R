@@ -313,3 +313,113 @@ segment.verify <- function (segment) {
     ## Otherwise is OK
     return(TRUE)
 }
+
+
+#' Collapses a segment into dwells with alternating conductance level.
+#'
+#' Segments may contain consecutive dwells with the same conductance level. 
+#' Consecutives_to_dwells sums together all consecutive dwells with the same
+#' conductance level. The result is a segment containing dwells that alternate
+#' in conductance level (i.e. 1,0,1,0,1,...)
+#'
+#' @param  segment The dwells and states table
+#' @return A modified copy of the original segment 
+#' @export
+segment.consecutives_to_dwells <- function(segment){
+
+    s2 = copy(segment)
+    d  = s2$dwells
+    s  = s2$states
+    sd = list(vector(),vector())
+    l  = length
+    c  = 1
+    i  = 1
+
+
+    while(i < l(s)){
+        if(s[i] == s[i+1]){
+            d[i+1] = d[i+1]+d[i]
+            if((i+1) == l(s)){
+                sd[[1]] = append(sd[[1]],s[i+1])
+                sd[[2]] = append(sd[[2]],d[i+1])}
+            i = i+1}
+        else if(s[i]!= s[i+1]){
+                sd[[1]] = append(sd[[1]],s[i])
+                sd[[2]] = append(sd[[2]],d[i])
+                if((i+1) == l(s)){
+                    sd[[1]] = append(sd[[1]],s[i+1])
+                    sd[[2]] = append(sd[[2]],d[i+1])}
+                i = i+1}
+    }
+
+    s2$dwells = sd[[2]]
+    s2$states = sd[[1]]
+
+    return(s2)
+}
+
+
+#' Imposes a deadtime to a segment by removing any dwell that is shorter than the deadtime.
+#'
+#' The user specifies a deadtime in microseconds. The function effectively undoes
+#' the work of the event detection algorithm by reverting the conductance level 
+#' (of the brief dwell) back to the previous conductance level in the time sequence.
+#' The function then returns a collapsed segment containing alternating dwells.
+#' (See segment.consecutives_to_dwells for details about the collapsed segment.)
+#' 
+#'
+#' @param  segment, the segment containing dwells and states.
+#' @param  dead_time, the briefest possible event in microseconds.
+#' @return A modified copy of the original segment 
+#' @export
+segment.impose_deadtime <- function(segment,dead_time){
+
+    s2 = copy(segment)
+    d  = s2$dwells
+    s  = s2$states
+    dt = dead_time / 1e6
+
+    #If first dwell is < dead_time, then set the conductance level to 0.
+    if (d[[1]] < dt){s[[1]] = 0}
+       
+    #For all other dwells in the segment, if the dwell is < dead_time, change the 
+    #conductance level to the previous (in the time sequence) dwell's 
+    #conductance level. 
+    for (i in 2:length(d)){if (d[[i]] < dt){s[[i]] = s[[i-1]]}}
+
+    #returns a collapsed segment of dwells with alternating conductance levels.
+    return(segment.consecutives_to_dwells(s2))
+}
+
+#' Imposes a fixed conductance level (0 or 1) to all dwells with subconductance levels.
+#'
+#' The user specifies the desired level ('open' or 'closed'). The function will modify
+#' any subconductance level (that is not 0 or 1) to be the desired level 1 for 'open'
+#' or 0 for 'closed'. The function then reutrns a collapsed segment containing 
+#' alternating dwells.
+#' (See segment.consecutives_to_dwells for details about the collapsed segment.)
+#'
+#' @param  segment, the segment containing dwells and states.
+#' @param  level, either 'open' or 'closed'
+#' @return A modified copy of the original segment 
+#' @export
+segment.subconductance_as <- function(segment,level){
+
+    s2 = copy(segment)
+    d  = s2$dwells
+    s  = s2$states
+
+
+    #Sets desired conductance level to 1 or zero depending on users' choice.
+    #Returns a warning message if level is not 'open' or 'closed'
+    if      (level == 'open')   {l = 1}
+    else if (level == 'closed') {l = 0}
+    else    {return('Conductance level must be either \'open\' or \'closed\'.')}
+
+    #For all the dwells in the segment, if the conductance level is not a 1 or a 0,
+    #then set the conductance level as the desired level l.
+    for (i in 1:length(s)){if ((s[[i]] != 0) & (s[[i]] != 1)){s[[i]] = l}}
+
+    #Returns a collapsed segment of dwells with alternating conductance levels.
+    return(segment.consecutives_to_dwells(s2))
+}
