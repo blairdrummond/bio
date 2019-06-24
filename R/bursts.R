@@ -527,3 +527,42 @@ bursts.popens <- function (bursts) {sapply(bursts, segment.popen)}
 #' @export
 bursts.pcloseds <- function (bursts) {sapply(bursts, segment.pclosed)}
 
+
+#' Imposes a deadtime to a burst by applying segment.impose_deadtime to each segment in a burst
+#'
+#' The user specifies a deadtime in microseconds. The function applies
+#' segment.impose_deadtime to each segment in the burst.
+#' (See segment.impose_deadtime for details.)
+#'
+#' @param  burst, a burst containing segments of dwells and states.
+#' @param  dead_time, the briefest possible event in microseconds.
+#' @return A modified copy of the original burst 
+#' @export
+bursts.impose_deadtime <- function(burst, dead_time){
+
+    b2 = copy(burst)
+
+    for (i in 1:length(b2)){b2[[i]] = segment.impose_deatime(b2[[i]],dead_time)}
+    
+    return(b2)
+}
+
+
+#' Imposes a fixed conductance level (0 or 1) to all dwells with subconductance levels to each segment in a burst by applying segment.subconductance_as.
+#'
+#' The user specifies the desired level ('open' or 'closed'). The function applies
+#' segment.subconductance_as to each segment in the burst.
+#' (See segment.subconductance_as for details.)
+#'
+#' @param  burst, a burst containing segments of dwells and states.
+#' @param  level, either 'open' or 'closed'
+#' @return A modified copy of the original burst 
+#' @export
+bursts.subconductance_as <- function(burst, level){
+
+    b2 = copy(burst)
+
+    for (i in 1:length(b2)){b2[[i]] = segment.subconductance_as(b2[[i]],level)}
+
+    return(b2)
+}
