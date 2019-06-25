@@ -495,6 +495,24 @@ lines(times, popens)
 
 
 
+# Subconductive States
+
+`scbursts` also has support for data with subconductive states (though on reading in a file, `scbursts` will issue a warning to inform the user that their data has subconductive states). There are tools available for visualizing the different subconductive states (`cplot.conductance_hist`) and functions for manipulating subconductive states (for instance, merging two or more states together, or removing subconductive states entirely). Some functions for this are:
+
+|        Function                |    Description                           |
+| ------------------------------ | ---------------------------------------- |
+| `segment.conductance_states`   | Get list of conductance states           |
+| `segment.check_subconductance` | Check for subconductance                 |
+| `segment.subconductance_as`    | Replace subconductive states with 0 or 1 |
+| `segment.modify_conductance`   | Remove or change conductance states      |
+| `bursts.conductance_states`    | Get list of conductance states           |
+| `bursts.check_subconductance`  | Check for subconductance                 |
+| `bursts.subconductance_as`     | Replace subconductive states with 0 or 1 |
+| `bursts.modify_conductance`    | Remove or change conductance states      |
+| `cplot.conductance_hist`       | Plot the conductance states              |
+
+An example is also below.
+
 # Example Workflows
 
 
@@ -593,6 +611,30 @@ head(bursts_twoplus[[1]])
 ```
 
 \nocite{*}
+
+## Example With Subconductive States
+
+```{r, fig.show='hold', eval=TRUE, include = TRUE}
+library(scbursts)
+
+infile <- system.file("extdata", "example3_qub.dwt", package = "scbursts")
+dwells <- dwt.read(infile)
+dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
+
+bursts <- bursts.defined_by_tcrit(dwells_c,100,units='ms')
+
+bursts.conductance_states(bursts)
+
+cplot.conductance_hist(bursts)
+
+head(bursts[[1]])
+
+bursts_d <- bursts.subconductance_as(bursts, "open")
+
+head(bursts_d[[1]])
+```
+
+
 
 # References
 
