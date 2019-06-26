@@ -1,4 +1,5 @@
-[![DOI](https://zenodo.org/badge/100089287.svg)](https://zenodo.org/badge/latestdoi/100089287)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3257364.svg)](https://doi.org/10.5281/zenodo.3257364)
+
 
 Available on [CRAN](https://cran.r-project.org/web/packages/scbursts/index.html)
 
