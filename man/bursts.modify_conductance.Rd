@@ -19,7 +19,7 @@ Transform the conductance states according to a user-defined function of conduct
 }
 \examples{
 
-infile <- system.file("extdata", "example3_qub.dwt", package = "scbursts")
+infile <- system.file("extdata", "example4.dwt", package = "scbursts")
 dwells <- dwt.read(infile)
 dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")

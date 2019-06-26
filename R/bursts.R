@@ -320,7 +320,7 @@ bursts.recombine <- function (bursts) {
 #' Either the factor in seconds, or a multiple of the longest observed dwell.
 #' @return The segments again, but with modified meta-data.
 #' @examples
-#' infile <- system.file("extdata", "example2_qub.dwt", package = "scbursts")
+#' infile <- system.file("extdata", "example_multiple_segments.dwt", package = "scbursts")
 #' dwells <- dwt.read(infile)
 #'
 #' # Still a list, but the meta-data is fixed
@@ -559,7 +559,7 @@ bursts.pcloseds <- function (bursts) {sapply(bursts, segment.pclosed)}
 #' @return a list of all the (sub)conductance states.
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example3_qub.dwt", package = "scbursts")
+#' infile <- system.file("extdata", "example4.dwt", package = "scbursts")
 #' dwells <- dwt.read(infile)
 #' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
@@ -580,7 +580,7 @@ bursts.conductance_states <- function (bursts) {
 #' @return True if it contains an conductance other than 0 or 1, False otherwise.
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example3_qub.dwt", package = "scbursts")
+#' infile <- system.file("extdata", "example4.dwt", package = "scbursts")
 #' dwells <- dwt.read(infile)
 #' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
@@ -617,7 +617,7 @@ bursts.remove_null <- function (bursts) {
 #' @return A modified copy of the original burst 
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example3_qub.dwt", package = "scbursts")
+#' infile <- system.file("extdata", "example4.dwt", package = "scbursts")
 #' dwells <- dwt.read(infile)
 #' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
@@ -647,7 +647,7 @@ bursts.impose_deadtime <- function(bursts, deadtime){
 #' @return A modified copy of the original burst 
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example3_qub.dwt", package = "scbursts")
+#' infile <- system.file("extdata", "example4.dwt", package = "scbursts")
 #' dwells <- dwt.read(infile)
 #' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
@@ -674,7 +674,7 @@ bursts.subconductance_as <- function(bursts, level){
 #' @return A modified copy of the original bursts
 #' @examples
 #' 
-#' infile <- system.file("extdata", "example3_qub.dwt", package = "scbursts")
+#' infile <- system.file("extdata", "example4.dwt", package = "scbursts")
 #' dwells <- dwt.read(infile)
 #' dwells_c <- risetime.correct_gaussian(Tr=35.0052278, dwells, units="us")
 #' bursts <- bursts.defined_by_tcrit(dwells_c, 100, units="ms")
