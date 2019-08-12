@@ -1,7 +1,24 @@
-PACKAGE = scbursts
-VERSION = 1.6
+# Not BSD Friendly. Sorry. Pull-Requests welcome.
 
-all: deps docs build check
+PACKAGE = scbursts
+VERSION = 1.7
+
+RCPPINCL := 		$(shell echo 'Rcpp:::CxxFlags()' | $(R_HOME)/bin/R --vanilla --slave)
+RCPPLIBS := 		$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R --vanilla --slave)
+
+c_sources := 		$(wildcard *.c)
+c_sharedlibs := 	$(patsubst %.c,%.o,$(c_sources))
+
+cpp_sources := 		$(wildcard *.cpp)
+cpp_sharedlibs := 	$(patsubst %.cpp,%.o,$(cpp_sources))
+
+%.o : %.c
+	R CMD SHLIB $<
+
+%.o : %.cpp
+	PKG_CPPFLAGS="$(RCPPFLAGS) $(RCPPINCL)" PKG_LIBS="$(RLDFLAGS) $(RCPPLIBS)" R CMD SHLIB $<
+
+all: $(c_sharedlibs) $(cpp_sharedlibs) deps docs build check
 
 update-deps:
 	Rscript -e 'install.packages("devtools",  repos="http://cran.rstudio.com")'
@@ -24,8 +41,10 @@ deps:
 docs:
 	R -e 'devtools::document()'
 
-build: deps NAMESPACE
-	R CMD build .
+build: deps NAMESPACE $(c_sharedlibs) $(cpp_sharedlibs) 
+	R -e 'Rcpp::compileAttributes()'
+	Rscript -e 'library(roxygen2); roxygenize()'
+	PKG_CPPFLAGS="$(RCPPFLAGS) $(RCPPINCL)" PKG_LIBS="$(RLDFLAGS) $(RCPPLIBS)" R CMD build .
 
 NAMESPACE:
 	$(MAKE) docs
@@ -44,6 +63,8 @@ fastcheck: build
 
 clean:
 	$(RM) -r $(PACKAGE).Rcheck/
+	$(RM) $(wildcard src/*.o)
+	$(RM) src/scbursts.so
 	$(RM) $(PACKAGE)_$(VERSION).tar.gz
 
 $(PACKAGE).Rcheck:

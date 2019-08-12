@@ -15,6 +15,29 @@ This `R` Package was originally designed for use by the [daCosta lab](http://www
 
 If any features seem wrongfully absent, or if any methods can be improved upon, feel free to either create an [issue](https://github.com/dacostalab/scbursts/issues) or (even better) submit a pull request.
 
+# External Dependencies
+
+The library includes [eigen3](http://eigen.tuxfamily.org) and [dcprogs](https://github.com/DCPROGS/HJCFIT) as dependencies. These files have their own licenses --- please see COPYING and the license files in their respective folders in `inst/include`.
+
+```
+inst/include
+├── dcprogs
+│   ├── DCProgsConfig.h
+│   ├── GPLv3.LICENSE
+│   └── likelihood
+├── dcprogs.h           <-- added by scbursts
+└── eigen3
+    ├── COPYING.BSD
+    ├── COPYING.GPL
+    ├── COPYING.LGPL
+    ├── COPYING.MINPACK
+    ├── COPYING.MPL2
+    ├── COPYING.README
+    ├── Eigen
+    ├── signature_of_eigen3_matrix_library
+    └── unsupported
+```
+
 # Installation
 
 ## From CRAN

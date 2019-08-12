@@ -18,14 +18,18 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#' Remove suffix and path from filename.
+
+#' Something to do with qmatrix
 #'
-#' @param filename string to extract basename from
-#' @return Name with suffix and path removed
-#' @examples
-#' util.basename("bursts/60uM-2017-08-18-16-32/60uM-712.dwt")
+#' @param qmatrix your qmatrix.
+#' @return A fitted model.
+#' @importFrom Rcpp sourceCpp
 #' @export
-util.basename <- function(filename) {
-    ### Remove the (.dwt|.evt) from filename
-    sapply(strsplit(basename(filename),"\\."), function(x) paste(x[1:(length(x)-1)], collapse=".")) 
+hjcfit.fit <- function (qmatrix) {
+
+    ##Sys.setenv("PKG_CXXFLAGS"="-I/usr/local/include/dcprogs/ -I/usr/local/include/eigen3") 
+    ##sourceCpp("src/hjcfit_test.cpp")
+    ##message(swag_out())
+    swag_out()
+    return(1)
 }

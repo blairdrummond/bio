@@ -1,0 +1,34 @@
+SCBURSTS LICENSING
+==================
+
+scbursts is licensed under the GNU Lesser general public license v2.1 or later. See the LICENSE file. Scbursts has included dependencies with different licenses, as is detailed in the section EXTERNAL LIBRARIES. The LGPLv2.1 is forward compatible with later LGPL or GPL licenses, which apply to some dependencies, and the MPL2 which applies primarily to the eigen3 library is permissive, and so its use in the LGPLv2 project is permitted. 
+
+Scbursts was authored by Blair Drummond; Mathieu Dextraze is a contributor.
+
+EXTERNAL LIBRARIES
+==================
+
+Some scbursts features rely on the external libraries (found in inst/include)
+
+	 - dcprogs/hjcfit : GPLv3
+
+	 and
+
+	 - eigen : MPL2 and others
+
+
+DCPROGS
+-------
+
+DCPROGD/HJCFIT is licensed under the GPLv3. A copy of the license is included in inst/include/dcprogs/
+
+https://github.com/DCPROGS/HJCFIT
+https://www.ucl.ac.uk/Pharmacology/dcpr95.html
+
+
+EIGEN
+-----
+
+Eigen is a C++ library which is primarily licensed under the MPL2 licence, but which has components using a variety of free licenses. The exact license varies from file to file, but all licenses are included here in inst/include/eigen3, and the file inst/include/eigen3/COPYING.README contains more detailed information concerning the licensing of the eigen3 library.
+
+http://eigen.tuxfamily.org

@@ -1,6 +1,9 @@
+inst/include/
 build.Rout
 .Rhistory
 *.swp
+*.o
+*.so
 *.pdf
 .RData
 *.tar.gz
@@ -8,3 +11,4 @@ builds/*
 scbursts.Rcheck/
 email-build.sh
 git-stuff.sh
+.Rproj.user
