@@ -13,4 +13,4 @@ Suggests: knitr,
 	tinytex
 VignetteBuilder: knitr
 Imports: readxl, tibble, Rcpp
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppEigen
