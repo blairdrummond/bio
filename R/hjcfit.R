@@ -85,9 +85,7 @@ hjcfit.fit_model <- function (qmatrix, nopen, bursts, resolution, nmax=2, xtol=1
         warning("Bursts contain intervals small than the time resolution!")
     }
    
-    message("Not implemented yet!!!")
-    message("TODO: Implement/Find MLE algorithm in C++ and stuff.")
-    return(cpp_hjcfit_likelihood_maximize(qmatrix, nopen, lapply(bursts, function (s) {s$dwells}, resolution, nmax, xtol, rtol, itermax)))
+    return(cpp_hjcfit_likelihood_maximize(qmatrix, nopen, lapply(bursts, function (s) {s$dwells}), resolution, nmax, xtol, rtol, itermax))
     # functional <- hjcfit_likelihood_function(nopen, lapply(bursts, function (s) {s$dwells}), resolution, nmax, xtol, rtol, itermax)
     
 }

@@ -14,7 +14,11 @@ Some scbursts features rely on the external libraries (found in inst/include)
 
 	 and
 
-	 - eigen : MPL2 and others
+     - eigen : MPL2 and others
+
+     also also
+
+     - asa047 : LGPLv3
 
 
 DCPROGS
@@ -32,3 +36,18 @@ EIGEN
 Eigen is a C++ library which is primarily licensed under the MPL2 licence, but which has components using a variety of free licenses. The exact license varies from file to file, but all licenses are included here in inst/include/eigen3, and the file inst/include/eigen3/COPYING.README contains more detailed information concerning the licensing of the eigen3 library.
 
 http://eigen.tuxfamily.org
+
+
+ASA047
+------
+
+ASA047 is an implementation of the Nelder-Mead minimization algorithm,
+
+  Original FORTRAN77 version by R ONeill.
+  C++ version by John Burkardt. 
+
+https://people.sc.fsu.edu/~jburkardt/cpp_src/asa047/asa047.html
+
+it is licensed under the LGPLv3 license, a copy of which can be found in the src folder along with the source files
+
+asa047.cpp asa047.hpp
