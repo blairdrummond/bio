@@ -9,7 +9,8 @@ library. This function is an interface for Log10Likelihood from
 HJCFIT.}
 \usage{
 hjcfit.fit_model(qmatrix, nopen, bursts, resolution, nmax = 2,
-  xtol = 10^(-10), rtol = 10^(-10), itermax = 100)
+  xtol = 10^(-10), rtol = 10^(-10), itermax = 100, REQMIN = 0.01,
+  KONVGE = 10, KMAX = 10000)
 }
 \arguments{
 \item{qmatrix}{your initial-guess qmatrix.}
@@ -27,6 +28,12 @@ hjcfit.fit_model(qmatrix, nopen, bursts, resolution, nmax = 2,
 \item{rtol}{Tolerance criteria for brentq().}
 
 \item{itermax}{Maximum number of iteration when calling brentq().}
+
+\item{REQMIN}{Nelder-Mead parameter: stop if within required distance.}
+
+\item{KONVGE}{Nelder-Mead parameter: check convergence every KONVGE steps.}
+
+\item{KMAX}{Nelder-Mead parameter: maximum number of iterations.}
 }
 \value{
 A qmatrix kinetic model which numerically maximizes likelihood.

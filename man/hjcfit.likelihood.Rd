@@ -27,7 +27,7 @@ hjcfit.likelihood(qmatrix, nopen, bursts, resolution, nmax = 2,
 \item{itermax}{Maximum number of iteration when calling brentq().}
 }
 \value{
-The log10-likelihood of the model given the burst sequence.
+The -log10-likelihood of the model given the burst sequence.
 }
 \description{
 https://github.com/DCPROGS/HJCFIT

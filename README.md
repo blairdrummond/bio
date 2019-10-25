@@ -2,6 +2,12 @@
 
 Available on [CRAN](https://cran.r-project.org/web/packages/scbursts/index.html)
 
+# Todo
+
+- Add mixdist or implement Landowne et. al's approach to figure out the number of exponentials without use of parameters.
+- Figure out how to statically link?
+
+
 # SCBursts - Single Channel Bursts Analysis
 
 This `R` Package was originally designed for use by the [daCosta lab](http://www.dacosta.net/), but is being provided to the wider Single Ion-Channel analysis community (or whoever else might find use in the package). 

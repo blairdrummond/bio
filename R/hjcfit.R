@@ -19,6 +19,8 @@
 
 
 
+
+
 #' Computes the likelihood of a kinetic model given observed bursts,
 #' with missed event correction, using the HJCFIT library. This
 #' function is an interface for Log10Likelihood from HJCFIT.
@@ -35,7 +37,7 @@
 #' @param xtol Tolerance criteria for brentq().
 #' @param rtol Tolerance criteria for brentq().
 #' @param itermax Maximum number of iteration when calling brentq().
-#' @return The log10-likelihood of the model given the burst sequence.
+#' @return The -log10-likelihood of the model given the burst sequence.
 #' @export
 hjcfit.likelihood <- function (qmatrix, nopen, bursts, resolution, nmax=2, xtol=1e-10, rtol=1e-10, itermax=100) {
 
@@ -73,9 +75,12 @@ hjcfit.likelihood <- function (qmatrix, nopen, bursts, resolution, nmax=2, xtol=
 #' @param xtol Tolerance criteria for brentq().
 #' @param rtol Tolerance criteria for brentq().
 #' @param itermax Maximum number of iteration when calling brentq().
+#' @param REQMIN Nelder-Mead parameter: stop if within required distance.
+#' @param KONVGE Nelder-Mead parameter: check convergence every KONVGE steps.
+#' @param KMAX Nelder-Mead parameter: maximum number of iterations.
 #' @return A qmatrix kinetic model which numerically maximizes likelihood.
 #' @export
-hjcfit.fit_model <- function (qmatrix, nopen, bursts, resolution, nmax=2, xtol=10^(-10), rtol=10^(-10), itermax=100) {
+hjcfit.fit_model <- function (qmatrix, nopen, bursts, resolution, nmax=2, xtol=10^(-10), rtol=10^(-10), itermax=100, REQMIN=0.01, KONVGE=10, KMAX=10000) {
 
     small_intervals <- function (seg) {
         length(subset(seg, dwells < resolution)$dwells) > 0

@@ -89,52 +89,119 @@ Eigen::MatrixXd cpp_hjcfit_likelihood_maximize (
 	DCProgs::t_real xtol=0.0000000001,
 	DCProgs::t_real rtol=0.0000000001,
 	DCProgs::t_uint itermax=100,
-	double REQMIN=0.000001,
+	double REQMIN=0.01,
 	int KONVGE=10,
-	int KMAX=1000
+	int KMAX=10000
 	) {
 		
 	DCProgs::Log10Likelihood likelihood( bursts, nopen, tau, /*tcrit*/ -1, nmax, xtol, rtol, itermax );
 
 	int ncols = qmatrix.cols();
 	int nrows = qmatrix.rows();
-	const int size = ncols * nrows;
-		
+	assert(nrows == ncols);
+	
+	// How many variable entries?
+	int size = 0;
+	double magnitude = 5;
+	double row_sum = 0;
+	int bad_qmatrix = 0;
+	for (int i=0; i<nrows; i++) {
+		row_sum = 0;
+		for (int j=0; j<ncols; j++) {
+			rom_sum += qmatrix(i,j);
+			if ( qmatrix(i,j) != 0 && i !=j ) {
+				if (qmatrix(i,j) < 0) {
+					Rcpp::Rcerr << "Off diagonal rates should be positive!" << std::endl;
+				}
+				if (abs(qmatrix(i,j)) > magnitude)
+					magnitude = abs(qmatrix(i,j));
+				// Check reversibility
+				if ( qmatrix(j,i) == 0 ) {
+					Rcpp::Rcerr << "Matrix must be reversible, but " << i << " -> " << j << " is not reversible." << std::endl;
+				}
+				size++;
+			}
+			if (row_sum != 0) {
+				Rcpp::Rcerr << "Rows must sum to zero, but row " << i << " sums to " << row_sum << std::endl;
+			}
+		}
+	}
+	if (bad_qmatrix) {
+		Rcpp::Rcerr << std::endl << "QMatrix needs to be fixed. Returning he original matrix." << std::endl;
+		return qmatrix;
+	}
+	
+
+	/*
+	  Now fill all the variable coordinates into a vector,
+	  with another vector serving as a lookup table to
+	  remember where the coordinates belong in the matrix.
+	*/
+	double lookup[size][2];
+	double start[size];
 	double minimizer[size];
+	int k = 0;
+	for (int i=0; i<nrows; i++) {
+		for (int j=0; j<nrows; j++) {
+			if (qmatrix(i,j) != 0 && i != j) {
+				start[k] = qmatrix(i,j);
+				minimizer[k] = qmatrix(i,j);
+				lookup[k][0] = i; 
+				lookup[k][1] = j;
+				k++;
+			}
+		}
+	}
+
+	
 	double min_likelihood;
 
-	// All values are <=1, of course.
+	// TODO: FIX THIS
 	double simplex[size];
-	for (int fill = fill; fill<size; fill++)
-		simplex[fill] = 1.0;
+	for (int fill = 0; fill<size; fill++)
+		simplex[fill] = magnitude;
 
 	int how_many_iter = 0;
 	int restarts = 0;
 	int error_val = -1;
 
-
-	
-		
     // auto fn = [](double *a) { return a[0]*a[0] + a[1]*a[1]; };
 
-	auto likelihood_wrapper = [=](double vec[]) {
-								  DCProgs::QMatrix new_qmatrix(
-									  Eigen::Map<Eigen::MatrixXd>(vec, nrows, ncols), nopen);
-								  return (double) likelihood(new_qmatrix);
+	auto likelihood_wrapper = [&lookup,size,&qmatrix,nrows,nopen,likelihood](double vec[]) {
+								  // update the qmatrix
+								  for (int k=0; k<size; k++) {
+									  qmatrix(lookup[k][0], lookup[k][1]) = vec[k];
+								  }
+
+								  // Add the constraint that rows sum to zero
+								  double row_sum = 0;
+								  int bad_qmatrix = 0;
+								  for (int i=0; i<nrows; i++) {
+									  row_sum = 0;
+									  for (int j=0; j<nrows; j++) {
+										  if (i != j) // skip diagonal
+											  rom_sum += qmatrix(i,j);
+									  }
+									  qmatrix(i,i) = - row_sum;
+								  }
+
+								  DCProgs::QMatrix new_qmatrix(qmatrix, nopen);
+								  /* Nelder-Mead minimizes, so minimize the negative. */
+								  return (double) -likelihood(new_qmatrix);
 							  };
 	
 	auto     fn      = likelihood_wrapper;    /* function */
 	int      n       = size;             /* size */
-	double * start   = qmatrix.data();   /* start */
+	// double * start   = qmatrix.data();   /* start */
 	double * xmin    = minimizer;        /* RESULT matrix */
 	double * ynewlo  = &min_likelihood;  /* RESULT likelihood */
 	double   reqmin  = REQMIN;           /* Stopping condition */
-	double * step    = simplex;          /* parameters <=1 */
+	double * step    = simplex;          /* parameters */
 	int      konvge  = KONVGE;           /* Check every KONVGE iterations */
 	int      kcount  = KMAX;             /* Max number of iterations */                
 	int    * icount  = &how_many_iter;   /* Count the number of iterations */
 	int    * numres  = &restarts;        /* How many algorithm restarts */
-	int    * ifault  = &error_val;       /* 0=OK; 1=Bad Parameter, 2=No Convrgence */
+	int    * ifault  = &error_val;       /* 0=OK; 1=Bad Parameter, 2=No Convergence */
 
 	// // The Nelder-Mead call
 	// nelmin(
@@ -710,7 +777,12 @@ end_of_nelder_mead:
 	else if (error_val == 2)
 		Rcout << "Failed to Converge!!!" << std::endl;
 
-	return Eigen::Map<Eigen::MatrixXd>(minimizer, nrows, ncols);
+	// Load final result into qmatrix
+	for (int k=0; k<size; k++) {
+		qmatrix(lookup[k][0], lookup[k][1]) = minimizer[k];
+	}
+	
+	return qmatrix;
 
 	//  // When giving names to elements
 	//  List L = List::create(
@@ -765,3 +837,45 @@ DCProgs::t_real cpp_hjcfit_likelihood (
 	//  		Named("nclosed")  = idealG.get_nshut());
 
 }
+
+
+
+
+// // [[Rcpp::depends(RcppEigen)]]
+// 
+// //' Computes the likelihood of a kinetic model given observed bursts,
+// //' with missed event correction, using the HJCFIT library. This
+// //' function is an interface for Log10Likelihood from HJCFIT.
+// //' 
+// //' https://github.com/DCPROGS/HJCFIT
+// //' 
+// //' See the link above and the references therein for details.
+// //'
+// //' NOTE: It is slow to call this over and over again.
+// //'
+// //' @param nopen Number of open states in the matrix
+// //' @param bursts A list of bursts
+// //' @param tau Maximum length of the missed events
+// //' @param nmax The exact missed-event likelihood will be computed for 't < n_max * tau'
+// //' @param xtol Tolerance criteria for brentq().
+// //' @param rtol Tolerance criteria for brentq().
+// //' @param itermax Maximum number of iteration when calling brentq().
+// //' @return The log10-likelihood function of the model given the burst sequence.
+// //' @export
+// // [[Rcpp::export]]
+// Rcpp::Function cpp_hjcfit_likelihood_function (
+// 	int nopen,
+// 	DCProgs::t_Bursts bursts,
+// 	DCProgs::t_real tau,
+// 	DCProgs::t_uint nmax=2,
+// 	DCProgs::t_real xtol=0.0000000001,
+// 	DCProgs::t_real rtol=0.0000000001,
+// 	DCProgs::t_uint itermax=100) {
+// 
+// 	DCProgs::Log10Likelihood likelihood( bursts, nopen, tau, /*tcrit*/ -1, nmax, xtol, rtol, itermax );
+// 
+// 	return [&likelihood,nopen](double matrix[]) {
+// 								  DCProgs::QMatrix new_qmatrix(matrix, nopen);
+// 								  return (double) likelihood(new_qmatrix);
+// 							  };
+// }
