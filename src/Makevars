@@ -1,3 +1,5 @@
+NLOPTLIBS=-lnlopt -lm
+
 PKG_CXXFLAGS= -I../inst/include/dcprogs -I../inst/include/eigen3
 PKG_CFLAGS= -I../inst/include/dcprogs -I../inst/include/eigen3
-PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) -lgmp -lmpfr -llikelihood
+PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) -lgmp -lmpfr -llikelihood -lnlopt -lm

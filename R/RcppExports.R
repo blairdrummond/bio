@@ -19,13 +19,10 @@
 #' @param xtol Tolerance criteria for brentq().
 #' @param rtol Tolerance criteria for brentq().
 #' @param itermax Maximum number of iteration when calling brentq().
-#' @param REQMIN Nelder-Mead parameter: stop if within required distance.
-#' @param KONVGE Nelder-Mead parameter: check convergence every KONVGE steps.
-#' @param KMAX Nelder-Mead parameter: maximum number of iterations.
 #' @return A qmatrix kinetic model which numerically maximizes likelihood.
 #' @export
-cpp_hjcfit_likelihood_maximize <- function(qmatrix, nopen, bursts, tau, nmax = 2L, xtol = 0.0000000001, rtol = 0.0000000001, itermax = 100L, REQMIN = 0.000001, KONVGE = 10L, KMAX = 1000L) {
-    .Call('_scbursts_cpp_hjcfit_likelihood_maximize', PACKAGE = 'scbursts', qmatrix, nopen, bursts, tau, nmax, xtol, rtol, itermax, REQMIN, KONVGE, KMAX)
+cpp_hjcfit_likelihood_maximize <- function(qmatrix, nopen, bursts, tau, nmax = 2L, xtol = 0.0000000001, rtol = 0.0000000001, itermax = 100L) {
+    .Call('_scbursts_cpp_hjcfit_likelihood_maximize', PACKAGE = 'scbursts', qmatrix, nopen, bursts, tau, nmax, xtol, rtol, itermax)
 }
 
 #' Computes the likelihood of a kinetic model given observed bursts,
@@ -46,7 +43,7 @@ cpp_hjcfit_likelihood_maximize <- function(qmatrix, nopen, bursts, tau, nmax = 2
 #' @param xtol Tolerance criteria for brentq().
 #' @param rtol Tolerance criteria for brentq().
 #' @param itermax Maximum number of iteration when calling brentq().
-#' @return The log10-likelihood of the model given the burst sequence.
+#' @return The negative log10-likelihood of the model given the burst sequence.
 #' @export
 cpp_hjcfit_likelihood <- function(qmatrix, nopen, bursts, tau, nmax = 2L, xtol = 0.0000000001, rtol = 0.0000000001, itermax = 100L) {
     .Call('_scbursts_cpp_hjcfit_likelihood', PACKAGE = 'scbursts', qmatrix, nopen, bursts, tau, nmax, xtol, rtol, itermax)

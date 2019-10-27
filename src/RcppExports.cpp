@@ -8,8 +8,8 @@
 using namespace Rcpp;
 
 // cpp_hjcfit_likelihood_maximize
-Eigen::MatrixXd cpp_hjcfit_likelihood_maximize(Eigen::MatrixXd qmatrix, int nopen, DCProgs::t_Bursts bursts, DCProgs::t_real tau, DCProgs::t_uint nmax, DCProgs::t_real xtol, DCProgs::t_real rtol, DCProgs::t_uint itermax, double REQMIN, int KONVGE, int KMAX);
-RcppExport SEXP _scbursts_cpp_hjcfit_likelihood_maximize(SEXP qmatrixSEXP, SEXP nopenSEXP, SEXP burstsSEXP, SEXP tauSEXP, SEXP nmaxSEXP, SEXP xtolSEXP, SEXP rtolSEXP, SEXP itermaxSEXP, SEXP REQMINSEXP, SEXP KONVGESEXP, SEXP KMAXSEXP) {
+Eigen::MatrixXd cpp_hjcfit_likelihood_maximize(Eigen::MatrixXd qmatrix, int nopen, DCProgs::t_Bursts bursts, DCProgs::t_real tau, DCProgs::t_uint nmax, DCProgs::t_real xtol, DCProgs::t_real rtol, DCProgs::t_uint itermax);
+RcppExport SEXP _scbursts_cpp_hjcfit_likelihood_maximize(SEXP qmatrixSEXP, SEXP nopenSEXP, SEXP burstsSEXP, SEXP tauSEXP, SEXP nmaxSEXP, SEXP xtolSEXP, SEXP rtolSEXP, SEXP itermaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,10 +21,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< DCProgs::t_real >::type xtol(xtolSEXP);
     Rcpp::traits::input_parameter< DCProgs::t_real >::type rtol(rtolSEXP);
     Rcpp::traits::input_parameter< DCProgs::t_uint >::type itermax(itermaxSEXP);
-    Rcpp::traits::input_parameter< double >::type REQMIN(REQMINSEXP);
-    Rcpp::traits::input_parameter< int >::type KONVGE(KONVGESEXP);
-    Rcpp::traits::input_parameter< int >::type KMAX(KMAXSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_hjcfit_likelihood_maximize(qmatrix, nopen, bursts, tau, nmax, xtol, rtol, itermax, REQMIN, KONVGE, KMAX));
+    rcpp_result_gen = Rcpp::wrap(cpp_hjcfit_likelihood_maximize(qmatrix, nopen, bursts, tau, nmax, xtol, rtol, itermax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -48,7 +45,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_scbursts_cpp_hjcfit_likelihood_maximize", (DL_FUNC) &_scbursts_cpp_hjcfit_likelihood_maximize, 11},
+    {"_scbursts_cpp_hjcfit_likelihood_maximize", (DL_FUNC) &_scbursts_cpp_hjcfit_likelihood_maximize, 8},
     {"_scbursts_cpp_hjcfit_likelihood", (DL_FUNC) &_scbursts_cpp_hjcfit_likelihood, 8},
     {NULL, NULL, 0}
 };

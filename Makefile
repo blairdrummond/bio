@@ -1,9 +1,10 @@
+
 # Not BSD Friendly. Sorry. Pull-Requests welcome.
 
 PACKAGE = scbursts
 VERSION = 1.7
 
-LIBS := -lgmp -lmpfr -llikelihood
+LIBS := -lgmp -lmpfr -llikelihood -lnlopt -lm
 
 RCPPINCL := 		$(shell echo 'Rcpp:::CxxFlags()' | $(R_HOME)/bin/R --vanilla --slave)
 RCPPLIBS := 		$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R --vanilla --slave)
@@ -34,6 +35,7 @@ update-deps:
 	Rscript -e 'install.packages("tinytex",   repos="http://cran.rstudio.com")'
 	Rscript -e 'install.packages("Rcpp",      repos="http://cran.rstudio.com")'
 	Rscript -e 'install.packages("RcppEigen", repos="http://cran.rstudio.com")'
+	Rscript -e 'install.packages("nloptr",    repos="http://cran.rstudio.com")'
 
 deps:
 	Rscript -e 'if (!require("devtools"))  install.packages("devtools",  repos="http://cran.rstudio.com")'
@@ -45,6 +47,7 @@ deps:
 	Rscript -e 'if (!require("tinytex"))   install.packages("tinytex",   repos="http://cran.rstudio.com")'
 	Rscript -e 'if (!require("Rcpp"))      install.packages("Rcpp",      repos="http://cran.rstudio.com")'
 	Rscript -e 'if (!require("RcppEigen")) install.packages("RcppEigen", repos="http://cran.rstudio.com")'
+	Rscript -e 'if (!require("nloptr"))    install.packages("nloptr",    repos="http://cran.rstudio.com")'
 
 docs:
 	R -e 'devtools::document()'

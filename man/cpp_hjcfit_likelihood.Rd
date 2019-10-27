@@ -27,7 +27,7 @@ cpp_hjcfit_likelihood(qmatrix, nopen, bursts, tau, nmax = 2L,
 \item{itermax}{Maximum number of iteration when calling brentq().}
 }
 \value{
-The log10-likelihood of the model given the burst sequence.
+The negative log10-likelihood of the model given the burst sequence.
 }
 \description{
 https://github.com/DCPROGS/HJCFIT
